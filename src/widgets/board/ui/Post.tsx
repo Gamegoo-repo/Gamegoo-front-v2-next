@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { FormProvider, UseFormReturn, useForm } from "react-hook-form";
 
 import { cn } from "@/shared/libs/cn";
+import { useModalStore } from "@/shared/store";
 import { Button } from "@/shared/ui/button";
 import { DialogModal } from "@/shared/ui/dialog";
 
@@ -30,6 +31,9 @@ type PostProps = {
 export function Post({ boardId, postData, userInfo }: PostProps) {
   const editPost = useEditPostMutation();
   const post = usePostMutation();
+
+  const open = useModalStore((s) => s.isPostModalOpen);
+  const onOpenChange = useModalStore((s) => s.togglePostModal);
 
   const methods = useForm<PostForm>({
     mode: "onChange",
@@ -95,6 +99,8 @@ export function Post({ boardId, postData, userInfo }: PostProps) {
       <form onSubmit={handleSubmit(handleOnSubmit)}>
         <DialogModal
           name={userInfo.gameName}
+          open={open}
+          onOpenChange={onOpenChange}
           description="글 작성"
           imgNum={userInfo.profileImg}
           tag={userInfo.tag}

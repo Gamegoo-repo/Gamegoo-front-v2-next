@@ -24,3 +24,5 @@ export type {
   Tier,
   Position
 } from "./model/types";
+
+export { useBumpMutation } from "./model/hooks/queries/useBumpMutation";

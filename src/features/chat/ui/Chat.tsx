@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ChevronLeft, EllipsisVertical } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 
@@ -34,6 +35,9 @@ export function Chat({ socket, uuid }: ChatProps) {
 
   const chatRef = useRef<HTMLUListElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const setStatus = useChatStore((s) => s.setStatus);
   const data = useChatStore((s) => s.data);
@@ -172,7 +176,7 @@ export function Chat({ socket, uuid }: ChatProps) {
       </header>
 
       <ul
-        className="group/chat h-full overflow-y-scroll px-3 pt-3 outline-none
+        className="group/chat h-full space-y-1 overflow-y-scroll px-3 pt-3 outline-none
 focus-visible:bg-violet-300"
         ref={chatRef}
       >
@@ -194,6 +198,7 @@ focus-visible:bg-violet-300"
               hour12: true
             }
           );
+          const systemMessage = v.senderId === 0 && v.senderName === null;
 
           return (
             <li
@@ -226,13 +231,15 @@ focus-visible:bg-violet-300"
                   className={cn(
                     "flex h-[38px] items-center gap-2",
                     v.senderName === data.gameName ? "flex-row-reverse" : "ml-auto",
-                    v.senderName !== data.gameName && hasScroll && "pr-2"
+                    v.senderName !== data.gameName && hasScroll && "pr-2",
+                    systemMessage && "mx-auto"
                   )}
                 >
-                  <div
+                  <span
                     className={cn(
                       "flex h-full items-end text-[10px] text-violet-400",
-                      nextTimeStamp === currentTimeStamp && "invisible"
+                      nextTimeStamp === currentTimeStamp && "invisible",
+                      systemMessage && "hidden"
                     )}
                   >
                     {new Date(v.timestamp).toLocaleString("ko-KR", {
@@ -240,14 +247,37 @@ focus-visible:bg-violet-300"
                       minute: "numeric",
                       hour12: true
                     })}
-                  </div>
+                  </span>
+
                   <p
                     className={cn(
-                      "w-fit rounded-xl px-2 py-1",
-                      v.senderName === data.gameName ? "bg-white" : "ml-auto bg-violet-300"
+                      "w-fit rounded-2xl px-3 py-1.5",
+                      v.senderName === data.gameName ? "bg-white" : "ml-auto bg-violet-300",
+                      systemMessage && "mx-auto bg-gray-700 text-xs text-white"
                     )}
                   >
-                    {v.message}
+                    {systemMessage
+                      ? v.message.split("글").map((j) => {
+                          const target = "상대방이 게시한 글";
+                          // eslint-disable-next-line
+                          const postDetailPageLink = `/board/${(v as any).boardId}?${searchParams.toString()}`;
+
+                          return (
+                            <>
+                              {j.includes(target.slice(0, target.length - 2)) ? (
+                                <Button
+                                  className="rounded-none border-b border-white p-0 text-xs
+font-normal hover:bg-transparent"
+                                  variant="ghost"
+                                  onClick={() => router.push(postDetailPageLink)}
+                                >{`${j}${target.at(-1)}`}</Button>
+                              ) : (
+                                j
+                              )}
+                            </>
+                          );
+                        })
+                      : v.message}
                   </p>
                 </div>
               </div>

@@ -1,6 +1,8 @@
+"use client";
+
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { cn } from "@/shared/libs/cn";
 import { toastMessage } from "@/shared/model";
@@ -17,6 +19,8 @@ import {
 import { ProfileIcon } from "@/entities/profile";
 
 type DialogModalProps = {
+  open: boolean;
+  onOpenChange: () => void;
   description: string;
   imgNum: number;
   name: string;
@@ -30,6 +34,8 @@ type DialogModalProps = {
 };
 
 export function DialogModal({
+  open,
+  onOpenChange,
   description,
   imgNum,
   name,
@@ -39,16 +45,18 @@ export function DialogModal({
   routeBack = false
 }: DialogModalProps) {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
-    if (!isOpen && routeBack) router.back();
-  }, [isOpen, router, routeBack]);
+    if (!open && routeBack) {
+      onOpenChange();
+      router.back();
+    }
+  }, [open, router, routeBack, onOpenChange]);
 
   return (
     <Dialog
-      open={isOpen}
-      onOpenChange={setIsOpen}
+      open={open}
+      onOpenChange={onOpenChange}
     >
       <DialogContent
         className="max-h-[95dvh] overflow-auto rounded-2xl bg-gray-200"

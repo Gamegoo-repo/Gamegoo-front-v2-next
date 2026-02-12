@@ -1,6 +1,8 @@
 "use client";
 
 import { getPositionIcon, getTierIcon } from "@/shared/model/getIcon";
+import { useModalStore } from "@/shared/store";
+import { Button } from "@/shared/ui/button";
 import { DialogModal } from "@/shared/ui/dialog";
 
 import {
@@ -16,8 +18,9 @@ import {
   createdAtFormat
 } from "@/entities/board";
 
-import type { BoardData, GameMode, Position, Tier } from "@/features/board";
-import { usePostDetailQuery } from "@/features/post/model/hooks/queries/usePostDetailQuery";
+import { type BoardData, type GameMode, type Position, type Tier } from "@/features/board";
+import { useEnterChatFromBoardMutation } from "@/features/chat";
+import { usePostDetailQuery } from "@/features/post";
 
 type BoardDetailModalProps = {
   boardId: string;
@@ -27,11 +30,16 @@ type BoardDetailModalProps = {
 export function BoardDetailModal({ boardId, boardData }: BoardDetailModalProps) {
   const { data: userInfo } = usePostDetailQuery(boardId, boardData);
 
+  const open = useModalStore((s) => s.isBoardDetailModalOpen);
+  const onOpenChange = useModalStore((s) => s.toggleBoardDetailModal);
+
   if (!boardData || !userInfo) return null;
 
   return (
     <DialogModal
       name={userInfo.gameName}
+      open={open}
+      onOpenChange={onOpenChange}
       imgNum={userInfo.profileImage}
       tag={userInfo.tag}
       description="상세 게시글"
@@ -83,6 +91,10 @@ export function BoardDetailModal({ boardId, boardData }: BoardDetailModalProps) 
         {
           id: "createdAt",
           content: <CreatedAtSection createdAt={userInfo.createdAt} />
+        },
+        {
+          id: "talk",
+          content: <TalkSection boardId={Number(boardId)} />
         }
       ]}
     />
@@ -162,11 +174,13 @@ function PreferredGameModeSection({
     <section className="flex gap-4">
       <div className="w-2/5 space-y-2">
         <h3 className="semibold-14">선호 게임모드</h3>
+
         <PreferredGameMode gameMode={gameMode} />
       </div>
 
       <div className="w-3/5 space-y-2">
         <h3 className="semibold-14 flex">최근 선호 챔피언</h3>
+
         <RecentPreferredChampions championStatsResponseList={championStatsResponseList} />
       </div>
     </section>
@@ -195,7 +209,7 @@ function GameStyleSection({ gameStyles }: { gameStyles: number[] }) {
 
 function CommentSection({ comment }: { comment: string }) {
   return (
-    <section className="space-y-[6px]">
+    <section className="space-y-2">
       <h3 className="semibold-14">한마디</h3>
 
       <Comments comments={comment} />
@@ -204,5 +218,27 @@ function CommentSection({ comment }: { comment: string }) {
 }
 
 function CreatedAtSection({ createdAt }: { createdAt: string }) {
-  return <p className="medium-11 text-right text-gray-500">게시일: {createdAtFormat(createdAt)}</p>;
+  return (
+    <p className="medium-11 -mt-4 pr-2 text-right text-gray-500">
+      게시일: {createdAtFormat(createdAt)}
+    </p>
+  );
+}
+
+function TalkSection({ boardId }: { boardId: number }) {
+  const enterChat = useEnterChatFromBoardMutation();
+
+  const toggleBoardDetailModal = useModalStore((s) => s.toggleBoardDetailModal);
+
+  return (
+    <Button
+      className="h-14 w-full rounded-xl bg-violet-600 text-white"
+      onClick={() => {
+        toggleBoardDetailModal();
+        enterChat.mutate({ boardId });
+      }}
+    >
+      말 걸어보기
+    </Button>
+  );
 }

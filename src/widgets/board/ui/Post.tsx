@@ -14,14 +14,12 @@ import {
   Comment,
   MainAndSubPosition,
   MicSwitch,
-  ModalContainer,
   type PostForm,
   PreferredGameMode,
   SelectGameStyle,
   WantPosition
 } from "@/features/board";
-import { useEditPostMutation } from "@/features/post/model/hooks/queries/useEditPostMutation";
-import { usePostMutation } from "@/features/post/model/hooks/queries/usePostMutation";
+import { useEditPostMutation, usePostMutation } from "@/features/post";
 
 type PostProps = {
   boardId?: string;

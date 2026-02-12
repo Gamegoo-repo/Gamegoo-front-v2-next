@@ -2,3 +2,5 @@ export { useDeletePostMutation } from "./model/hooks/queries/useDeletePostMutati
 export { useFetchPostListQuery } from "./model/hooks/queries/useFetchPostListQuery";
 export { usePostDetailQuery } from "./model/hooks/queries/usePostDetailQuery";
 export { useBlockUserMutation } from "./model/hooks/queries/useBlockUserMutation";
+export { useEditPostMutation } from "./model/hooks/queries/useEditPostMutation";
+export { usePostMutation } from "./model/hooks/queries/usePostMutation";

@@ -63,7 +63,7 @@ export function ChatWidget() {
     });
 
     setUnReadMessageCount(
-      chatList?.map((v) => v.notReadMsgCnt).reduce((acc, cur) => acc + cur) ?? 0
+      chatList?.map((v) => v.notReadMsgCnt).reduce((acc, cur) => acc + cur, 0) ?? 0
     );
   }, [messageTrigger, chatList, queryClient]);
 
@@ -78,6 +78,7 @@ export function ChatWidget() {
     return () => window.removeEventListener("keydown", detectPressEnter);
   }, []);
 
+  // 모달이 열려있을 때 모달 바깥 영역이 스크롤되지 않게 하는 useEffect
   useEffect(() => {
     if (!isOpen) return;
 

@@ -277,8 +277,8 @@ p-[8px]"
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent
-                  className="medium-14 w-[175px] rounded-[10px] border border-violet-300 bg-white
-p-0 text-gray-600 *:h-[43px] *:hover:bg-gray-200"
+                  className="medium-14 w-[175px] rounded-[10px] border border-gray-300 bg-white p-0
+text-gray-600 *:h-[43px] *:hover:bg-gray-200"
                   align="end"
                 >
                   {v.memberId === userInfo.id ? (
@@ -422,7 +422,7 @@ function Report({ isReportOpen, setIsReportOpen, memberId, boardId }: ReportProp
       onOpenChange={setIsReportOpen}
     >
       <DialogContent
-        className="max-h-[90vh] overflow-y-scroll bg-white"
+        className="max-h-[90vh] overflow-y-scroll bg-gray-200"
         showCloseButton={false}
       >
         <DialogHeader>
@@ -430,6 +430,7 @@ function Report({ isReportOpen, setIsReportOpen, memberId, boardId }: ReportProp
             <DialogTitle className="bold-20">유저 신고하기</DialogTitle>
             <DialogClose asChild>
               <Button
+                className="hover:bg-gray-300"
                 variant="ghost"
                 size="icon"
               >
@@ -453,6 +454,7 @@ function Report({ isReportOpen, setIsReportOpen, memberId, boardId }: ReportProp
                   >
                     <Checkbox
                       id={v}
+                      className="bg-white"
                       onCheckedChange={(isSelected: boolean) => {
                         setReportCodeList((prev: number[]) =>
                           isSelected ? [...prev, i] : prev.filter((item) => item !== i)
@@ -476,7 +478,7 @@ function Report({ isReportOpen, setIsReportOpen, memberId, boardId }: ReportProp
             <p className="semibold-18">상세 내용</p>
             <div>
               <Textarea
-                className="h-20 border border-violet-300"
+                className="a11y-focus-within h-20 border border-gray-300 bg-white"
                 onChange={(e) => setReportContent(e.target.value)}
                 placeholder="내용을 입력하세요. (선택)"
               />
@@ -485,7 +487,7 @@ function Report({ isReportOpen, setIsReportOpen, memberId, boardId }: ReportProp
 
           <DialogClose asChild>
             <Button
-              className="bold-14 h-16 w-full rounded-2xl"
+              className="h-16 w-full rounded-xl"
               disabled={reportCodeList.length === 0}
               onClick={() => {
                 report.mutate({

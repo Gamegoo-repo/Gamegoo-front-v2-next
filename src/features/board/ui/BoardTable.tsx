@@ -422,7 +422,7 @@ function Report({ isReportOpen, setIsReportOpen, memberId, boardId }: ReportProp
       onOpenChange={setIsReportOpen}
     >
       <DialogContent
-        className="max-h-[90vh] overflow-y-scroll bg-gray-200"
+        className="max-h-[90vh] overflow-y-scroll rounded-2xl bg-gray-200"
         showCloseButton={false}
       >
         <DialogHeader>

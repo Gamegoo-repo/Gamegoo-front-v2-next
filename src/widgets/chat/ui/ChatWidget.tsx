@@ -7,6 +7,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useTriggerSocketEvent } from "@/shared/hooks/socket/useTriggerSocketEvent";
 import { cn } from "@/shared/libs/cn";
 import { useSocketContext } from "@/shared/libs/socket/SocketContext";
+import { useModalStore } from "@/shared/store";
 import { Button } from "@/shared/ui/button";
 
 import { CHAT_HISTORY_QUERY_KEYS, CHAT_LIST_QUERY_KEYS, ViewType } from "@/entities/chat";
@@ -25,7 +26,6 @@ import {
  * 우측 하단 메시지 버튼을 렌더링하는 컴포넌트
  */
 export function ChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
   const [viewType, setViewType] = useState<ViewType>("친구 목록");
   const [unReadMessageCount, setUnReadMessageCount] = useState(0);
 
@@ -39,13 +39,15 @@ export function ChatWidget() {
   const authStatus = useAuthStore((s) => s.authStatus);
   const status = useChatStore((s) => s.status);
   const uuid = useChatStore((s) => s.uuid);
+  const isChatWidgetOpen = useModalStore((s) => s.isChatWidgetOpen);
+  const toggleChatWidget = useModalStore((s) => s.toggleChatWidget);
   const setIsOpenLoginRequiredModal = useAuthStore((s) => s.setIsOpenLoginRequiredModal);
 
   const queryClient = useQueryClient();
 
   // 모달이 열릴 때 채팅 목록 및 기록의 캐시를 무효화하여 새로운 데이터를 렌더링하도록 하는 useEffect
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isChatWidgetOpen) return;
 
     queryClient.invalidateQueries({
       queryKey: CHAT_LIST_QUERY_KEYS.all
@@ -53,7 +55,7 @@ export function ChatWidget() {
     queryClient.invalidateQueries({
       queryKey: CHAT_HISTORY_QUERY_KEYS.all
     });
-  }, [isOpen, queryClient]);
+  }, [isChatWidgetOpen, queryClient]);
 
   // 메시지가 수신되면 새로운 chatList 객체를 받아와 렌더링하는 useEffect
   // -> chatList 내부에 읽지 않은 메시지를 카운트하는 프로퍼티가 있음
@@ -70,24 +72,24 @@ export function ChatWidget() {
   // ESC를 눌렀을 때 메시지 모달이 닫히게 하는 useEffect
   useEffect(() => {
     const detectPressEnter = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false);
+      if (e.key === "Escape") toggleChatWidget();
     };
 
     window.addEventListener("keydown", detectPressEnter);
 
     return () => window.removeEventListener("keydown", detectPressEnter);
-  }, []);
+  }, [toggleChatWidget]);
 
   // 모달이 열려있을 때 모달 바깥 영역이 스크롤되지 않게 하는 useEffect
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isChatWidgetOpen) return;
 
     document.body.style.overflow = "hidden";
 
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isOpen]);
+  }, [isChatWidgetOpen]);
 
   if (!friendList || !chatList) return null;
 
@@ -103,7 +105,7 @@ export function ChatWidget() {
               return;
             }
 
-            setIsOpen(!isOpen);
+            toggleChatWidget();
           }}
         >
           <MessageSquare className="size-8 stroke-[1.5] text-white" />
@@ -119,7 +121,7 @@ rounded-full border border-violet-300 bg-violet-200 text-lg"
         )}
       </div>
 
-      {isOpen && (
+      {isChatWidgetOpen && (
         <div
           className="fixed right-8 bottom-32 h-[720px] max-h-[75dvh] w-[420px] space-y-2
 overflow-y-scroll rounded-2xl border border-gray-200 bg-white shadow-lg"
@@ -132,7 +134,7 @@ overflow-y-scroll rounded-2xl border border-gray-200 bg-white shadow-lg"
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => toggleChatWidget()}
                   >
                     <X />
                   </Button>

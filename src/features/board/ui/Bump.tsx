@@ -5,7 +5,7 @@ import { ChevronsUp } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 
 import { useAuthStore } from "@/features/auth";
-import { useBumpMutation } from "@/features/board/model/hooks/queries/useBumpMutation";
+import { useBumpMutation } from "@/features/board";
 
 export function Bump() {
   const setIsOpenLoginRequiredModal = useAuthStore((s) => s.setIsOpenLoginRequiredModal);

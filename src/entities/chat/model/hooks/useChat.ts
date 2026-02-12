@@ -5,6 +5,8 @@ import { SOCKET_EVENTS } from "@/shared/constants/socketEvents";
 
 import { MessageEmitByServer } from "@/entities/chat";
 
+import { useChatStore } from "@/features/chat";
+
 type Err = {
   event: string;
   data: string;
@@ -14,6 +16,9 @@ type Err = {
 export const useChat = (socket: Socket | null, chatroomUuid: string) => {
   const [messages, setMessages] = useState<MessageEmitByServer["data"][]>([]);
   const [isConnected, setIsConnected] = useState(false);
+
+  const system = useChatStore((s) => s.system);
+  const setSystem = useChatStore((s) => s.setSystem);
 
   const messageEvent = (response: MessageEmitByServer) => {
     setMessages((prev) => [...prev, response.data]);
@@ -42,11 +47,23 @@ export const useChat = (socket: Socket | null, chatroomUuid: string) => {
         socket.off(event, handler);
       });
     };
-  }, [socket]);
+  }, [socket, chatroomUuid]);
 
   const sendMessage = (message: string) => {
     if (!socket) {
       console.error("소켓이 연결되지 않았습니다.");
+      return;
+    }
+
+    if (system) {
+      socket.emit("chat-message", {
+        uuid: chatroomUuid,
+        message,
+        system
+      });
+
+      setSystem(null);
+
       return;
     }
 

@@ -31,6 +31,7 @@ type DialogModalProps = {
   }[];
   activeCopy?: boolean;
   routeBack?: boolean;
+  disableInteractOutside?: boolean;
 };
 
 export function DialogModal({
@@ -42,7 +43,8 @@ export function DialogModal({
   tag,
   items,
   activeCopy,
-  routeBack = false
+  routeBack = false,
+  disableInteractOutside
 }: DialogModalProps) {
   const router = useRouter();
 
@@ -61,6 +63,9 @@ export function DialogModal({
       <DialogContent
         className="max-h-[95dvh] overflow-auto rounded-2xl bg-gray-200"
         showCloseButton={false}
+        onInteractOutside={(e) => {
+          if (disableInteractOutside) e.preventDefault();
+        }}
       >
         <DialogHeader>
           <div className="flex justify-between px-2">
@@ -70,9 +75,13 @@ export function DialogModal({
                 padding={8}
                 imgNum={imgNum}
               />
+
               <h2>
                 <Button
-                  className={cn("flex flex-col items-start gap-0", !activeCopy && "cursor-default")}
+                  className={cn(
+                    "flex flex-col items-start gap-0 rounded-xl hover:bg-gray-300",
+                    !activeCopy && "cursor-default hover:bg-transparent"
+                  )}
                   variant="ghost"
                   onClick={() => {
                     if (!activeCopy) return;
@@ -86,6 +95,7 @@ export function DialogModal({
                   <span className="text-gray-500">#{tag}</span>
                 </Button>
               </h2>
+              <Button>프로필 보기</Button>
             </header>
 
             <DialogClose asChild>

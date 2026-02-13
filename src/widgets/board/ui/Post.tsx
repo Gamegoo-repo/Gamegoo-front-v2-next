@@ -105,6 +105,7 @@ export function Post({ boardId, postData, userInfo }: PostProps) {
           imgNum={userInfo.profileImg}
           tag={userInfo.tag}
           routeBack
+          disableInteractOutside
           items={[
             {
               id: "position",

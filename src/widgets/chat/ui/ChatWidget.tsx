@@ -72,13 +72,13 @@ export function ChatWidget() {
   // ESC를 눌렀을 때 메시지 모달이 닫히게 하는 useEffect
   useEffect(() => {
     const detectPressEnter = (e: KeyboardEvent) => {
-      if (e.key === "Escape") toggleChatWidget();
+      if (e.key === "Escape" && isChatWidgetOpen) toggleChatWidget();
     };
 
     window.addEventListener("keydown", detectPressEnter);
 
     return () => window.removeEventListener("keydown", detectPressEnter);
-  }, [toggleChatWidget]);
+  }, [toggleChatWidget, isChatWidgetOpen]);
 
   // 모달이 열려있을 때 모달 바깥 영역이 스크롤되지 않게 하는 useEffect
   useEffect(() => {

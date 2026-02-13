@@ -17,7 +17,7 @@ export function MainAndSubPosition() {
       className="flex items-center justify-center gap-4 rounded-xl border border-gray-300 bg-white
 py-4"
     >
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-1">
         <h4 className="bold-12">주 포지션</h4>
 
         <SelectPosition
@@ -48,7 +48,7 @@ py-4"
         <ArrowLeftRight className="size-5 stroke-[1.5]" />
       </Button>
 
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-1">
         <h4 className="bold-12">부 포지션</h4>
 
         <SelectPosition

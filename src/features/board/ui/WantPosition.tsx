@@ -5,7 +5,7 @@ import { SelectPosition } from "@/entities/board";
 export function WantPosition() {
   return (
     <div
-      className="flex flex-col items-center justify-center gap-2 rounded-xl border border-gray-300
+      className="flex flex-col items-center justify-center gap-1 rounded-xl border border-gray-300
 bg-white py-4"
     >
       <h4 className="bold-12">내가 찾는 포지션</h4>

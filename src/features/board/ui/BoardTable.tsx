@@ -169,16 +169,17 @@ group-hover:opacity-100 hover:bg-gray-300 focus-visible:opacity-100"
         {/* 티어 */}
         <TableCell>
           <div className="flex items-center justify-center">
-            <div className="flex size-[34px] items-center justify-center">
+            <div className="flex size-10 items-center justify-center">
               <SoloTierIcon />
             </div>
+
             <span className="bold-16">{`${v.tier.at(0)}${v.tier.at(0) !== "U" ? v.rank : ""}`}</span>
           </div>
         </TableCell>
 
         {/* 주/부 포지션 */}
         <TableCell>
-          <div className="flex justify-center gap-[2px] *:size-[24px]">
+          <div className="flex justify-center gap-1 *:size-8">
             <MainPositionIcon />
             <SubPositionIcon />
           </div>
@@ -186,7 +187,7 @@ group-hover:opacity-100 hover:bg-gray-300 focus-visible:opacity-100"
 
         {/* 내가 찾는 포지션 */}
         <TableCell>
-          <div className="flex justify-center gap-[2px] *:size-[24px]">
+          <div className="flex justify-center gap-1 *:size-8">
             <WantMainPosition />
             {v.wantP[1] !== undefined && <WantSubPosition />}
           </div>

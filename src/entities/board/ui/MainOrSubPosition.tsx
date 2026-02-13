@@ -11,14 +11,14 @@ export function MainOrSubPosition({ MainPositionIcon, SubPositionIcon }: MainOrS
       className="flex items-center justify-center gap-8 rounded-xl border border-gray-300 bg-white
 py-4"
     >
-      <div>
+      <div className="space-y-1">
         <h4>주 포지션</h4>
-        <MainPositionIcon className="size-12" />
+        <MainPositionIcon className="size-10" />
       </div>
 
-      <div>
+      <div className="space-y-1">
         <h4>부 포지션</h4>
-        <SubPositionIcon className="size-12" />
+        <SubPositionIcon className="size-10" />
       </div>
     </div>
   );

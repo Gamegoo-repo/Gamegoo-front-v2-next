@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/shared/libs/cn";
 import { getPositionIcon, getTierIcon } from "@/shared/model/getIcon";
 import { useModalStore } from "@/shared/store";
 import { Button } from "@/shared/ui/button";
@@ -172,13 +173,13 @@ function PreferredGameModeSection({
 }: PreferredGameModeSectionProps) {
   return (
     <section className="flex gap-4">
-      <div className="w-2/5 space-y-2">
+      <div className="w-1/2 space-y-2">
         <h3 className="semibold-14">선호 게임모드</h3>
 
         <PreferredGameMode gameMode={gameMode} />
       </div>
 
-      <div className="w-3/5 space-y-2">
+      <div className="w-1/2 space-y-2">
         <h3 className="semibold-14 flex">최근 선호 챔피언</h3>
 
         <RecentPreferredChampions championStatsResponseList={championStatsResponseList} />
@@ -190,7 +191,18 @@ function PreferredGameModeSection({
 function WinRateSection({ winRate }: { winRate: number }) {
   return (
     <section className="space-y-2">
-      <h3 className="semibold-14">승률 {winRate}%</h3>
+      <h3 className="semibold-14">
+        <span>승률 </span>
+        <span
+          className={cn(
+            winRate < 50 && "text-gray-700",
+            winRate >= 50 && winRate < 70 && "text-violet-600",
+            winRate >= 70 && "text-[#CB1FCF]"
+          )}
+        >
+          {winRate}%
+        </span>
+      </h3>
 
       <WinRate winRate={winRate ?? 0} />
     </section>

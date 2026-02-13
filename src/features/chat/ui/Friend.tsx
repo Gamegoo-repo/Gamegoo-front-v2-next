@@ -61,7 +61,7 @@ outline-none hover:bg-gray-200"
             {unReadMessageCount > 0 && (
               <span
                 className="flex size-5 items-center justify-center rounded-full bg-violet-600
-text-sm text-white"
+text-xs text-white"
               >
                 {unReadMessageCount}
               </span>

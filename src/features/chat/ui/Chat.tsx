@@ -99,6 +99,7 @@ export function Chat({ socket, uuid }: ChatProps) {
       <header className="flex items-center justify-between border-b border-violet-300 px-3 pb-4">
         <div className="flex items-center gap-2">
           <Button
+            className="ring-offset-violet-200"
             variant="ghost"
             size="icon"
             onClick={() => {
@@ -115,13 +116,13 @@ export function Chat({ socket, uuid }: ChatProps) {
             <ChevronLeft className="size-5" />
           </Button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <ProfileIcon imgNum={data.memberProfileImg} />
 
             <div className="space-y-1">
               <div className="flex items-center gap-4 py-0! font-semibold">
                 <Button
-                  className="p-0 focus-visible:ring-0!"
+                  className="px-2 py-0 focus-visible:ring-0!"
                   variant="ghost"
                   tabIndex={-1}
                   onClick={() => {
@@ -133,7 +134,7 @@ export function Chat({ socket, uuid }: ChatProps) {
                   <span className="text-gray-500">#{data.tag}</span>
                 </Button>
               </div>
-              <div className="medium-11">
+              <div className="medium-11 ml-1 *:border *:border-gray-400">
                 {onlineFriendsIds.includes(data.memberId) ? (
                   <span className="rounded-md bg-green-400 px-2 py-0.5 font-semibold">온라인</span>
                 ) : (
@@ -147,6 +148,7 @@ export function Chat({ socket, uuid }: ChatProps) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
+              className="ring-offset-violet-200"
               variant="ghost"
               size="icon"
             >
@@ -176,8 +178,8 @@ export function Chat({ socket, uuid }: ChatProps) {
       </header>
 
       <ul
-        className="group/chat h-full space-y-1 overflow-y-scroll px-3 pt-3 outline-none
-focus-visible:bg-violet-300"
+        className="group/chat a11y-focus-visible relative z-50 h-full overflow-y-scroll px-3 pt-3
+outline-none focus-visible:bg-violet-100 focus-visible:ring-offset-violet-200"
         ref={chatRef}
       >
         {messagesWithHistory.map((v, i) => {
@@ -205,82 +207,84 @@ focus-visible:bg-violet-300"
               key={`${v.timestamp}-${i}`}
               className={cn(nextTimeStamp !== currentTimeStamp && "pb-2")}
             >
-              {isNewDay && (
+              {isNewDay ? (
                 <div className="my-2 text-center">
-                  <span className="rounded-md bg-gray-200 px-4 py-0.5 text-sm">
+                  <span
+                    className="rounded-md border border-gray-400 bg-gray-200 px-4 py-0.5 text-sm"
+                  >
                     {getDisplayDate(v.createdAt)}
                   </span>
                 </div>
-              )}
+              ) : (
+                <div className="flex items-center gap-2">
+                  {v.senderName === data.gameName && (
+                    <div
+                      className={cn(
+                        messagesWithHistory[i - 1]?.senderId === v.senderId && "invisible"
+                      )}
+                    >
+                      <ProfileIcon
+                        size={32}
+                        imgNum={Number(v.senderProfileImg)}
+                      />
+                    </div>
+                  )}
 
-              <div className="flex items-center gap-2">
-                {v.senderName === data.gameName && (
                   <div
                     className={cn(
-                      messagesWithHistory[i - 1]?.senderId === v.senderId && "invisible"
+                      "flex h-[32px] items-center gap-1",
+                      v.senderName === data.gameName ? "flex-row-reverse" : "ml-auto",
+                      v.senderName !== data.gameName && hasScroll && "pr-2",
+                      systemMessage && "mx-auto"
                     )}
                   >
-                    <ProfileIcon
-                      size={36}
-                      imgNum={Number(v.senderProfileImg)}
-                    />
-                  </div>
-                )}
+                    <span
+                      className={cn(
+                        "flex h-full items-end pb-0.5 text-[10px] text-violet-400",
+                        nextTimeStamp === currentTimeStamp && "invisible",
+                        systemMessage && "hidden"
+                      )}
+                    >
+                      {new Date(v.timestamp).toLocaleString("ko-KR", {
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: true
+                      })}
+                    </span>
 
-                <div
-                  className={cn(
-                    "flex h-[38px] items-center gap-2",
-                    v.senderName === data.gameName ? "flex-row-reverse" : "ml-auto",
-                    v.senderName !== data.gameName && hasScroll && "pr-2",
-                    systemMessage && "mx-auto"
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "flex h-full items-end text-[10px] text-violet-400",
-                      nextTimeStamp === currentTimeStamp && "invisible",
-                      systemMessage && "hidden"
-                    )}
-                  >
-                    {new Date(v.timestamp).toLocaleString("ko-KR", {
-                      hour: "numeric",
-                      minute: "numeric",
-                      hour12: true
-                    })}
-                  </span>
+                    <p
+                      className={cn(
+                        "w-fit rounded-xl px-2 py-1 text-sm",
+                        v.senderName === data.gameName ? "bg-white" : "ml-auto bg-violet-300",
+                        systemMessage && "mx-auto bg-gray-700 text-xs text-white"
+                      )}
+                    >
+                      {systemMessage
+                        ? v.message.split("글").map((j, i) => {
+                            const target = "상대방이 게시한 글";
+                            // eslint-disable-next-line
+                            const postDetailPageLink = `/board/${(v as any).boardId}?${searchParams.toString()}`;
 
-                  <p
-                    className={cn(
-                      "w-fit rounded-2xl px-3 py-1.5",
-                      v.senderName === data.gameName ? "bg-white" : "ml-auto bg-violet-300",
-                      systemMessage && "mx-auto bg-gray-700 text-xs text-white"
-                    )}
-                  >
-                    {systemMessage
-                      ? v.message.split("글").map((j, i) => {
-                          const target = "상대방이 게시한 글";
-                          // eslint-disable-next-line
-                          const postDetailPageLink = `/board/${(v as any).boardId}?${searchParams.toString()}`;
-
-                          return (
-                            <Fragment key={`${j}-${i}`}>
-                              {j.includes(target.slice(0, target.length - 2)) ? (
-                                <Button
-                                  className="rounded-none border-b border-white p-0 text-xs
+                            return (
+                              <Fragment key={`${j}-${i}`}>
+                                {j.includes(target.slice(0, target.length - 2)) ? (
+                                  <Button
+                                    className="rounded-none border-b border-white p-0 text-xs
 font-normal hover:bg-transparent"
-                                  variant="ghost"
-                                  onClick={() => router.push(postDetailPageLink)}
-                                >{`${j}${target.at(-1)}`}</Button>
-                              ) : (
-                                j
-                              )}
-                            </Fragment>
-                          );
-                        })
-                      : v.message}
-                  </p>
+                                    variant="ghost"
+                                    onClick={() => router.push(postDetailPageLink)}
+                                  >{`${j}${target.at(-1)}`}</Button>
+                                ) : (
+                                  j
+                                )}
+                              </Fragment>
+                            );
+                          })
+                        : v.message}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </li>
           );
         })}

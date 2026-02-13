@@ -4,6 +4,7 @@ import { RefreshCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { cn } from "@/shared/libs/cn";
+import { toastMessage } from "@/shared/model";
 import { Button } from "@/shared/ui/button";
 
 export function RefetchButton({ refetch }: { refetch: () => void }) {
@@ -23,6 +24,8 @@ export function RefetchButton({ refetch }: { refetch: () => void }) {
         variant="ghost"
         onClick={() => {
           refetch();
+
+          toastMessage.success("게시글을 새로고침했습니다.");
 
           setRotate(true);
         }}

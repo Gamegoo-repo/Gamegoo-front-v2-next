@@ -1,27 +1,17 @@
 "use client";
 
-import { EllipsisVertical, X } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { POSITION_ICONS, TIER_ICONS } from "@/shared/constants";
-import { REPORT_ITEMS } from "@/shared/constants/reportItems";
 import { cn } from "@/shared/libs/cn";
 import { formatTime } from "@/shared/libs/date/formatTime";
 import { toastMessage } from "@/shared/model";
 import { AlertModal } from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
-import { Checkbox } from "@/shared/ui/checkbox";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle
-} from "@/shared/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,14 +27,13 @@ import {
   TableHeader,
   TableRow
 } from "@/shared/ui/table";
-import { Textarea } from "@/shared/ui/textarea";
 
 import { UserInfo } from "@/entities/auth";
 import { ProfileIcon } from "@/entities/profile";
 
-import { BoardList } from "@/features/board";
-import { useBlockUserMutation, useDeletePostMutation } from "@/features/post";
-import { useReportMutation } from "@/features/post/model/hooks/queries/useReportMutation";
+import { BoardList, ReportModal } from "@/features/board";
+import { useDeletePostMutation } from "@/features/post";
+import { useBlockUserMutation } from "@/features/profile";
 
 type BoardTableProps = {
   posts: NonNullable<BoardList>["boards"];
@@ -115,13 +104,13 @@ function BoardRow({ v, userInfo }: BoardRowProps) {
   const WantMainPosition = POSITION_ICONS[v.wantP[0]];
   const WantSubPosition = POSITION_ICONS[v.wantP[1]];
 
-  const postDetailPageLink = `/board/${v.boardId}?${searchParams.toString()}`;
+  const postDetailPageLink = `/board/${v.boardId}?${searchParams.toString()}&viewType=in-game`;
 
   return (
     <>
       <TableRow
-        className="group a11y-focus-visible relative rounded-md outline-none *:border-b
-*:border-b-gray-300 *:py-[19px] hover:bg-gray-200"
+        className="group a11y-focus-visible relative rounded-md transition-none outline-none
+*:border-b *:border-b-gray-300 *:py-[19px] hover:bg-gray-200"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter") router.push(postDetailPageLink);
@@ -134,6 +123,7 @@ function BoardRow({ v, userInfo }: BoardRowProps) {
             className="absolute inset-0"
             aria-label="게시물 상세로 이동"
             tabIndex={-1}
+            prefetch
           />
 
           <div className="flex gap-[8px]">
@@ -332,13 +322,7 @@ text-gray-600 *:h-[43px] *:hover:bg-gray-200"
         onOpenChange={setIsBlockOpen}
         action={() => blockUser.mutate({ memberId: v.memberId, type: "block" })}
         title="차단하시겠습니까?"
-        description={
-          <>
-            <span>차단한 상대에게는 메시지를 받을 수 없으며</span>
-            <br />
-            <span>매칭이 이루어지지 않습니다.</span>
-          </>
-        }
+        description="차단한 상대에게는 메시지를 받을 수 없으며 매칭이 이루어지지 않습니다."
         actionLabel="차단"
       />
 
@@ -354,9 +338,10 @@ text-gray-600 *:h-[43px] *:hover:bg-gray-200"
       />
 
       {/* 신고 */}
-      <Report
-        isReportOpen={isReportOpen}
-        setIsReportOpen={setIsReportOpen}
+      <ReportModal
+        name={v.gameName}
+        isReportModalOpen={isReportOpen}
+        setIsReportModalOpen={setIsReportOpen}
         memberId={v.memberId}
         boardId={v.boardId}
       />
@@ -373,7 +358,7 @@ type DropdownItemWrapperProps = {
 function DropdownItemWrapper({ label, onClick, className }: DropdownItemWrapperProps) {
   return (
     <DropdownMenuItem
-      className={cn("a11y-focus-visible-bg first:rounded-b-none last:rounded-t-none", className)}
+      className={cn("a11y-focus-within-bg first:rounded-b-none last:rounded-t-none", className)}
       onClick={() => onClick()}
       onKeyDown={(e) => e.stopPropagation()}
     >
@@ -403,110 +388,4 @@ function Skeleton() {
   }, []);
 
   return <>{skeletonRows}</>;
-}
-type ReportProps = {
-  isReportOpen: boolean;
-  setIsReportOpen: Dispatch<SetStateAction<boolean>>;
-  memberId: number;
-  boardId: number;
-};
-
-function Report({ isReportOpen, setIsReportOpen, memberId, boardId }: ReportProps) {
-  const [reportCodeList, setReportCodeList] = useState<number[]>([]);
-  const [reportContent, setReportContent] = useState("");
-
-  const report = useReportMutation();
-
-  return (
-    <Dialog
-      open={isReportOpen}
-      onOpenChange={setIsReportOpen}
-    >
-      <DialogContent
-        className="max-h-[90vh] overflow-y-scroll rounded-2xl bg-gray-200"
-        showCloseButton={false}
-      >
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="bold-20">유저 신고하기</DialogTitle>
-            <DialogClose asChild>
-              <Button
-                className="hover:bg-gray-300"
-                variant="ghost"
-                size="icon"
-              >
-                <X />
-              </Button>
-            </DialogClose>
-          </div>
-          <DialogDescription className="sr-only">유저 신고</DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-8">
-          <div className="space-y-3">
-            <p className="semibold-18">신고 사유</p>
-
-            <ul className="space-y-[21px]">
-              {REPORT_ITEMS.map((v, i) => {
-                return (
-                  <li
-                    key={v}
-                    className="flex cursor-pointer items-center gap-2 *:cursor-pointer"
-                  >
-                    <Checkbox
-                      id={v}
-                      className="bg-white"
-                      onCheckedChange={(isSelected: boolean) => {
-                        setReportCodeList((prev: number[]) =>
-                          isSelected ? [...prev, i] : prev.filter((item) => item !== i)
-                        );
-                      }}
-                      checked={reportCodeList.includes(i)}
-                    />
-                    <label
-                      className="regular-18"
-                      htmlFor={v}
-                    >
-                      {v}
-                    </label>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          <div className="space-y-3">
-            <p className="semibold-18">상세 내용</p>
-            <div>
-              <Textarea
-                className="a11y-focus-within h-20 border border-gray-300 bg-white"
-                onChange={(e) => setReportContent(e.target.value)}
-                placeholder="내용을 입력하세요. (선택)"
-              />
-            </div>
-          </div>
-
-          <DialogClose asChild>
-            <Button
-              className="h-16 w-full rounded-xl"
-              disabled={reportCodeList.length === 0}
-              onClick={() => {
-                report.mutate({
-                  memberId: memberId,
-                  reportCodeList,
-                  pathCode: 1,
-                  contents: reportContent,
-                  boardId: boardId
-                });
-
-                setReportCodeList([]);
-              }}
-            >
-              신고하기
-            </Button>
-          </DialogClose>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
 }

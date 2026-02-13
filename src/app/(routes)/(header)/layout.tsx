@@ -8,7 +8,7 @@ export default async function ContentsLayout({ children }: { children: React.Rea
   return (
     <InitAuthProvider>
       <SocketProvider>
-        <div className="mx-auto my-20 max-w-[1220px]">
+        <div className="mx-auto my-20 max-w-7xl">
           <Header />
           <main>{children}</main>
         </div>

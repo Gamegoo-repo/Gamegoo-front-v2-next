@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Toaster } from "sonner";
 
 import "@/shared/styles/globals.css";
+import { TooltipProvider } from "@/shared/ui/tooltip";
 
 import { LoginRequiredModal } from "@/features/auth";
 
@@ -21,15 +22,17 @@ export default async function RootLayout({
 }>) {
   return (
     <ReactQueryProvider>
-      <html lang="ko">
-        <body>{children}</body>
-      </html>
+      <TooltipProvider>
+        <html lang="ko">
+          <body>{children}</body>
+        </html>
 
-      <Toaster
-        className="z-50"
-        richColors={true}
-      />
-      <LoginRequiredModal />
+        <Toaster
+          className="z-50"
+          richColors={true}
+        />
+        <LoginRequiredModal />
+      </TooltipProvider>
     </ReactQueryProvider>
   );
 }

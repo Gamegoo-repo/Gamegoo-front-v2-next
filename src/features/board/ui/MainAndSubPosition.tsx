@@ -13,10 +13,7 @@ export function MainAndSubPosition() {
   const { getValues, setValue } = useFormContext<PostForm>();
 
   return (
-    <div
-      className="flex items-center justify-center gap-4 rounded-xl border border-gray-300 bg-white
-py-4"
-    >
+    <div className="modal-content-box flex items-center justify-center gap-4">
       <div className="flex flex-col items-center gap-1">
         <h4 className="bold-12">주 포지션</h4>
 

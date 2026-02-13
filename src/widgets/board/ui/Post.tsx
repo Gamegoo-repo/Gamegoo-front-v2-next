@@ -1,26 +1,24 @@
 "use client";
 
 import { useEffect } from "react";
-import { FormProvider, UseFormReturn, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 
-import { cn } from "@/shared/libs/cn";
 import { useModalStore } from "@/shared/store";
-import { Button } from "@/shared/ui/button";
 import { DialogModal } from "@/shared/ui/dialog";
 
 import { UserInfo } from "@/entities/auth";
 
+import { BoardData, type PostForm } from "@/features/board";
 import {
-  BoardData,
-  Comment,
-  MainAndSubPosition,
-  MicSwitch,
-  type PostForm,
-  PreferredGameMode,
-  SelectGameStyle,
-  WantPosition
-} from "@/features/board";
-import { useEditPostMutation, usePostMutation } from "@/features/post";
+  CommentSection,
+  GameStyleSection,
+  MicSection,
+  PositionSection,
+  PreferredGameModeSection,
+  SubmitSection,
+  useEditPostMutation,
+  usePostMutation
+} from "@/features/post";
 
 type PostProps = {
   boardId?: string;
@@ -106,130 +104,36 @@ export function Post({ boardId, postData, userInfo }: PostProps) {
           tag={userInfo.tag}
           routeBack
           disableInteractOutside
+          submit={<SubmitSection isValid={isValid} />}
           items={[
             {
               id: "position",
+              isPost: true,
               content: <PositionSection methods={methods} />
             },
             {
               id: "preferredGameMode",
+              isPost: true,
               content: <PreferredGameModeSection />
             },
             {
               id: "gameStyle",
+              isPost: true,
               content: <GameStyleSection methods={methods} />
             },
             {
               id: "mic",
+              isPost: true,
               content: <MicSection />
             },
             {
               id: "comment",
+              isPost: true,
               content: <CommentSection />
-            },
-            {
-              id: "submit",
-              content: <SubmitSection isValid={isValid} />
             }
           ]}
         />
       </form>
     </FormProvider>
-  );
-}
-
-// eslint-disable-next-line
-type Methods = UseFormReturn<PostForm, any, PostForm>;
-
-function PositionSection({ methods }: { methods: Methods }) {
-  return (
-    <section className="space-y-2">
-      <h3 className="semibold-14">포지션</h3>
-
-      <div className="flex items-center gap-4 *:flex-1">
-        <MainAndSubPosition />
-        <input
-          type="hidden"
-          {...methods.register("mainPosition", {
-            required: true
-          })}
-        />
-
-        <WantPosition />
-        <input
-          type="hidden"
-          {...methods.register("wantMainPosition", {
-            validate: (_, formValues) =>
-              formValues.wantMainPosition || formValues.wantSubPosition
-                ? true
-                : "원하는 포지션을 하나 이상 선택해주세요"
-          })}
-        />
-      </div>
-    </section>
-  );
-}
-
-function PreferredGameModeSection() {
-  return (
-    <section className="space-y-2">
-      <h3 className="semibold-14">선호 게임 모드</h3>
-
-      <div className="flex gap-4">
-        <div className="w-1/2">
-          <PreferredGameMode />
-        </div>
-
-        <div className="invisible w-1/2" />
-      </div>
-    </section>
-  );
-}
-
-function GameStyleSection({ methods }: { methods: Methods }) {
-  return (
-    <section className="space-y-2">
-      <h3 className="semibold-14">게임 스타일</h3>
-
-      <SelectGameStyle />
-      <input
-        type="hidden"
-        {...methods.register("gameStyles", {
-          validate: (value) => value.length > 0
-        })}
-      />
-    </section>
-  );
-}
-
-function MicSection() {
-  return (
-    <section className="space-y-2">
-      <h3 className="semibold-14">마이크</h3>
-
-      <MicSwitch />
-    </section>
-  );
-}
-
-function CommentSection() {
-  return (
-    <section className="space-y-2">
-      <h3>한마디</h3>
-
-      <Comment />
-    </section>
-  );
-}
-
-function SubmitSection({ isValid }: { isValid: boolean }) {
-  return (
-    <Button
-      className={cn("h-14 w-full bg-violet-400 text-white", isValid && "bg-violet-600")}
-      type="submit"
-      disabled={!isValid}
-    >
-      작성 완료
-    </Button>
   );
 }

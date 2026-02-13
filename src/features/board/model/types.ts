@@ -32,3 +32,12 @@ export type PostBody = {
   gameStyles?: number[] | undefined;
   contents?: string | undefined;
 };
+
+type MannerLevel = NonNullable<
+  paths["/api/v2/manner/level/{memberId}"]["get"]["responses"]["200"]["content"]["*/*"]["data"]
+>;
+type MannerKeywords = NonNullable<
+  paths["/api/v2/manner/keyword/{memberId}"]["get"]["responses"]["200"]["content"]["*/*"]["data"]
+>;
+
+export type MannerData = MannerLevel & MannerKeywords;

@@ -4,6 +4,7 @@ import { clientSideOpenapiClient } from "@/shared/api/clientSideOpenapiClient";
 import { toastMessage } from "@/shared/model";
 
 import { POST_QUERYKEYS } from "@/entities/post";
+import { OTHER_PROFILE_QUERY_KEYS } from "@/entities/profile";
 
 export const useBlockUserMutation = () => {
   const queryClient = useQueryClient();
@@ -41,6 +42,9 @@ export const useBlockUserMutation = () => {
 
       queryClient.invalidateQueries({
         queryKey: POST_QUERYKEYS.PostList
+      });
+      queryClient.invalidateQueries({
+        queryKey: OTHER_PROFILE_QUERY_KEYS.memberId(variables.memberId)
       });
     }
   });

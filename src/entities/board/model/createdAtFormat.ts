@@ -1,11 +1,9 @@
+import { format } from "date-fns";
+
 export const createdAtFormat = (createdAt: string) => {
+  if (!createdAt) return;
+
   const d = new Date(createdAt);
-  return (
-    [
-      String(d.getFullYear()).slice(2),
-      String(d.getMonth() + 1).padStart(2, "0"),
-      String(d.getDate()).padStart(2, "0")
-    ].join(".") +
-    ` ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`
-  );
+
+  return format(d, "yy.MM.dd HH:mm");
 };

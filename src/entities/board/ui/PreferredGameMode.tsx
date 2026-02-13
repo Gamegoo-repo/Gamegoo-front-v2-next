@@ -1,5 +1,7 @@
 import { Check } from "lucide-react";
 
+import { InnerBox } from "@/shared/ui/board-detail-modal";
+
 import { GameMode } from "@/features/board";
 
 export function PreferredGameMode({ gameMode }: { gameMode: GameMode }) {
@@ -17,9 +19,9 @@ export function PreferredGameMode({ gameMode }: { gameMode: GameMode }) {
   };
 
   return (
-    <div className="flex h-16 items-center gap-1 rounded-xl border border-gray-300 bg-white px-4">
+    <InnerBox>
       <Check className="text-violet-600" />
-      <span className="medium-16">{preferredGameMode(gameMode)}</span>
-    </div>
+      <span className="medium-16 shrink-0">{preferredGameMode(gameMode)}</span>
+    </InnerBox>
   );
 }

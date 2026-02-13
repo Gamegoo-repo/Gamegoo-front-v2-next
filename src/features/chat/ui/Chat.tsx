@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ChevronLeft, EllipsisVertical } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 
 import { cn } from "@/shared/libs/cn";
@@ -257,13 +257,13 @@ focus-visible:bg-violet-300"
                     )}
                   >
                     {systemMessage
-                      ? v.message.split("글").map((j) => {
+                      ? v.message.split("글").map((j, i) => {
                           const target = "상대방이 게시한 글";
                           // eslint-disable-next-line
                           const postDetailPageLink = `/board/${(v as any).boardId}?${searchParams.toString()}`;
 
                           return (
-                            <>
+                            <Fragment key={`${j}-${i}`}>
                               {j.includes(target.slice(0, target.length - 2)) ? (
                                 <Button
                                   className="rounded-none border-b border-white p-0 text-xs
@@ -274,7 +274,7 @@ font-normal hover:bg-transparent"
                               ) : (
                                 j
                               )}
-                            </>
+                            </Fragment>
                           );
                         })
                       : v.message}

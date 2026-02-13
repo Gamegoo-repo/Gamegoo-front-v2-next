@@ -1,4 +1,5 @@
-import { formatTime } from "@/shared/libs/date/formatTime";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
 
 import { ViewType } from "@/entities/chat";
 import { ProfileIcon } from "@/entities/profile";
@@ -50,7 +51,9 @@ outline-none hover:bg-gray-200"
                 <span className="inline-flex size-2 rounded-full bg-green-500" />
               )}
             </div>
-            <span className="text-xs">{type === "채팅방" ? formatTime(lastMsgAt!) : ""}</span>
+            <span className="text-xs">
+              {type === "채팅방" ? format(new Date(lastMsgAt!), "p", { locale: ko }) : ""}
+            </span>
           </div>
 
           <p className="flex flex-1 items-center justify-between text-sm text-gray-500">

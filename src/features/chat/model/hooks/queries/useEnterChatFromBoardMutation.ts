@@ -10,6 +10,7 @@ export const useEnterChatFromBoardMutation = () => {
   const setUuid = useChatStore((s) => s.setUuid);
   const setData = useChatStore((s) => s.setData);
   const setSystem = useChatStore((s) => s.setSystem);
+  const isChatWidgetOpen = useModalStore((s) => s.isChatWidgetOpen);
   const toggleChatWidget = useModalStore((s) => s.toggleChatWidget);
 
   return useMutation({
@@ -40,7 +41,7 @@ export const useEnterChatFromBoardMutation = () => {
       });
       setStatus("ACTIVE");
 
-      toggleChatWidget();
+      if (!isChatWidgetOpen) toggleChatWidget();
     }
   });
 };

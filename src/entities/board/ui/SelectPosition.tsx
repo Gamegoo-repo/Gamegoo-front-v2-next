@@ -6,6 +6,7 @@ import { useFormContext } from "react-hook-form";
 
 import { POSITION_ICONS } from "@/shared/constants";
 import { cn } from "@/shared/libs/cn";
+import { toastMessage } from "@/shared/model";
 import { Button } from "@/shared/ui/button";
 import {
   Popover,
@@ -25,7 +26,7 @@ type SelectPositionProps = {
 
 export function SelectPosition({ label, position }: SelectPositionProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { setValue, watch } = useFormContext<PostForm>();
+  const { setValue, getValues, watch } = useFormContext<PostForm>();
   const selectedPosition = watch(position);
 
   const PositionIcon = selectedPosition ? POSITION_ICONS[selectedPosition] : undefined;
@@ -45,7 +46,7 @@ export function SelectPosition({ label, position }: SelectPositionProps) {
             <PositionIcon className="w-10" />
           </Button>
         ) : (
-          <div className="flex size-10 items-center">
+          <div className="flex size-10 items-center justify-center">
             <Button
               className="flex items-center justify-center rounded-full border border-gray-300
 bg-violet-100 px-4 py-1.5 hover:bg-violet-200"
@@ -69,7 +70,7 @@ bg-violet-100 px-4 py-1.5 hover:bg-violet-200"
           <div className="flex items-center justify-between pl-2 text-gray-300">
             <p className="bold-20">{label} 선택</p>
             <Button
-              className="hover:bg-gray-700"
+              className="hover:bg-gray-600"
               size="icon"
               variant="ghost"
               onClick={() => setIsOpen(false)}
@@ -82,16 +83,36 @@ bg-violet-100 px-4 py-1.5 hover:bg-violet-200"
             {Object.keys(POSITION_ICONS).map((v) => {
               const Icon = POSITION_ICONS[v as keyof typeof POSITION_ICONS];
 
+              const isOtherSelected =
+                (position === "mainPosition" && getValues("subPosition") === v) ||
+                (position === "subPosition" && getValues("mainPosition") === v);
+
               return (
                 <Button
                   key={v}
                   className={cn(
-                    "flex size-10 items-center justify-center hover:bg-gray-700",
-                    selectedPosition === v && "rounded-[6px] bg-violet-600 [&>svg]:text-white"
+                    `group/button-container flex size-10 items-center justify-center
+hover:bg-gray-600`,
+                    selectedPosition === v &&
+                      "bg-violet-600 hover:bg-violet-500 [&>svg]:text-gray-300",
+                    isOtherSelected && "cursor-not-allowed opacity-20 hover:bg-transparent"
                   )}
                   variant="ghost"
                   type="button"
                   onClick={() => {
+                    if (isOtherSelected) {
+                      toastMessage.error("주 포지션과 부 포지션을 다르게 설정해 주세요.");
+                      return;
+                    }
+
+                    // 선택된 포지션을 다시 선택하면 선택을 취소함
+                    if (selectedPosition === v) {
+                      setValue(position, undefined, { shouldDirty: true, shouldValidate: true });
+
+                      setIsOpen(false);
+                      return;
+                    }
+
                     setValue(position, v as keyof typeof POSITION_ICONS, {
                       shouldDirty: true,
                       shouldValidate: true
@@ -100,7 +121,7 @@ bg-violet-100 px-4 py-1.5 hover:bg-violet-200"
                     setIsOpen(false);
                   }}
                 >
-                  <Icon className="size-7 text-gray-500" />
+                  <Icon className="size-7 text-gray-400" />
                 </Button>
               );
             })}

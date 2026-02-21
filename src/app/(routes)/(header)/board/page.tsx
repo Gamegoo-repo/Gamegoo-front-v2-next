@@ -1,15 +1,10 @@
-"use client";
-
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Board, HeaderContainer } from "@/widgets/board";
 
 export default function BoardPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    if (!searchParams.has("page")) router.replace("/board/?page=1");
-  }, [searchParams, router]);
-
-  return null;
+  return (
+    <>
+      <HeaderContainer />
+      <Board />
+    </>
+  );
 }

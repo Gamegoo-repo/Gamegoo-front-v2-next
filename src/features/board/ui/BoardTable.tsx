@@ -4,12 +4,13 @@ import { EllipsisVertical } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 
 import { POSITION_ICONS, TIER_ICONS } from "@/shared/constants";
 import { cn } from "@/shared/libs/cn";
 import { formatTime } from "@/shared/libs/date/formatTime";
 import { toastMessage } from "@/shared/model";
+import { useModalStore } from "@/shared/store";
 import { AlertModal } from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
 import {
@@ -28,20 +29,24 @@ import {
   TableRow
 } from "@/shared/ui/table";
 
-import { UserInfo } from "@/entities/auth";
-import { ProfileIcon } from "@/entities/profile";
+import { PostList } from "@/entities/post";
+import { MyProfile, ProfileIcon } from "@/entities/profile";
 
-import { BoardList, ReportModal } from "@/features/board";
-import { useDeletePostMutation } from "@/features/post";
+import { ReportModal } from "@/features/board";
+import { Post, useDeletePostMutation } from "@/features/post";
 import { useBlockUserMutation } from "@/features/profile";
 
 type BoardTableProps = {
-  posts: NonNullable<BoardList>["boards"];
-  isLoading: boolean;
-  userInfo: UserInfo;
+  posts: PostList;
+  myProfile: MyProfile;
 };
 
-export function BoardTable({ posts, isLoading, userInfo }: BoardTableProps) {
+export function BoardTable({ posts, myProfile }: BoardTableProps) {
+  const [myPostBoardId, setMyPostBoardId] = useState<number>();
+
+  const isEditModalOpen = useModalStore((s) => s.isEditModalOpen);
+  const toggleEditModal = useModalStore((s) => s.toggleEditModal);
+
   return (
     <>
       <Table className="table-fixed">
@@ -63,13 +68,14 @@ export function BoardTable({ posts, isLoading, userInfo }: BoardTableProps) {
         </TableHeader>
 
         <TableBody>
-          {posts && !isLoading ? (
+          {posts ? (
             posts.map((v) => {
               return (
                 <BoardRow
                   key={`${v.boardId}-${v.memberId.toString()}`}
                   v={v}
-                  userInfo={userInfo}
+                  myProfile={myProfile}
+                  setMyPostBoardId={setMyPostBoardId}
                 />
               );
             })
@@ -78,19 +84,29 @@ export function BoardTable({ posts, isLoading, userInfo }: BoardTableProps) {
           )}
         </TableBody>
       </Table>
+
+      <Post
+        open={isEditModalOpen}
+        onOpenChange={toggleEditModal}
+        userInfo={myProfile}
+        myPostBoardId={myPostBoardId}
+      />
     </>
   );
 }
 
 type BoardRowProps = {
-  v: NonNullable<BoardList>["boards"][number];
-  userInfo: UserInfo;
+  v: PostList[number];
+  myProfile: MyProfile;
+  setMyPostBoardId: Dispatch<SetStateAction<number | undefined>>;
 };
 
-function BoardRow({ v, userInfo }: BoardRowProps) {
+function BoardRow({ v, myProfile, setMyPostBoardId }: BoardRowProps) {
   const [isBlockOpen, setIsBlockOpen] = useState(false);
   const [isUnblockOpen, setIsUnblockOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
+
+  const toggleEditModal = useModalStore((s) => s.toggleEditModal);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -104,7 +120,7 @@ function BoardRow({ v, userInfo }: BoardRowProps) {
   const WantMainPosition = POSITION_ICONS[v.wantP[0]];
   const WantSubPosition = POSITION_ICONS[v.wantP[1]];
 
-  const postDetailPageLink = `/board/${v.boardId}?${searchParams.toString()}&viewType=in-game`;
+  const postDetailPageLink = `/board/${v.boardId}?${searchParams.toString()}`;
 
   return (
     <>
@@ -123,7 +139,6 @@ function BoardRow({ v, userInfo }: BoardRowProps) {
             className="absolute inset-0"
             aria-label="게시물 상세로 이동"
             tabIndex={-1}
-            prefetch
           />
 
           <div className="flex gap-[8px]">
@@ -254,7 +269,7 @@ p-[8px]"
           <div className="flex items-center justify-between gap-[6px] text-gray-500">
             <p className="flex w-full justify-center">{formatTime(v.createdAt)}</p>
 
-            {userInfo && (
+            {myProfile && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -272,15 +287,15 @@ p-[8px]"
 text-gray-600 *:h-[43px] *:hover:bg-gray-200"
                   align="end"
                 >
-                  {v.memberId === userInfo.id ? (
+                  {v.memberId === myProfile.id ? (
                     <DropdownItemWrapper
+                      className="hover:text-gray-600!"
+                      onClick={() => {
+                        setMyPostBoardId(v.boardId);
+
+                        toggleEditModal();
+                      }}
                       label="수정하기"
-                      onClick={() =>
-                        router.push(
-                          `/board/post/${v.boardId}/edit/?page=${searchParams.get("page")}`,
-                          { scroll: false }
-                        )
-                      }
                     />
                   ) : (
                     <DropdownItemWrapper
@@ -288,9 +303,9 @@ text-gray-600 *:h-[43px] *:hover:bg-gray-200"
                       onClick={() => setIsReportOpen(true)}
                     />
                   )}
-                  {v.memberId === userInfo.id ? (
+                  {v.memberId === myProfile.id ? (
                     <DropdownItemWrapper
-                      className="text-red-500"
+                      className="hover:text-red-600!"
                       label="삭제하기"
                       onClick={() => deletePost.mutate(v.boardId)}
                     />
@@ -358,7 +373,10 @@ type DropdownItemWrapperProps = {
 function DropdownItemWrapper({ label, onClick, className }: DropdownItemWrapperProps) {
   return (
     <DropdownMenuItem
-      className={cn("a11y-focus-within-bg first:rounded-b-none last:rounded-t-none", className)}
+      className={cn(
+        "a11y-focus-visible-bg first:rounded-b-none last:rounded-t-none hover:bg-gray-200!",
+        className
+      )}
       onClick={() => onClick()}
       onKeyDown={(e) => e.stopPropagation()}
     >

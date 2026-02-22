@@ -1,21 +1,25 @@
 import { cn } from "@/shared/libs/cn";
 import { OuterBox } from "@/shared/ui/board-detail-modal";
 
-import { MANNER_KEYWORDS_BAD, MANNER_KEYWORDS_GOOD } from "@/entities/board";
-import { MannerKeywordsBad, MannerKeywordsGood } from "@/entities/board/model/types";
+import {
+  MANNER_KEYWORDS,
+  MannerData,
+  MannerKeywordsBad,
+  MannerKeywordsGood
+} from "@/entities/post";
 
-import { MannerData } from "@/features/board";
+export function MannerKeywords({ mannerData }: { mannerData: MannerData | undefined }) {
+  if (!mannerData) return null;
 
-export function MannerKeywords({ mannerData }: { mannerData: MannerData }) {
   return (
     <div className="flex gap-4 *:flex-1">
       <Container
-        keywords={MANNER_KEYWORDS_GOOD}
+        keywords={MANNER_KEYWORDS.GOOD}
         label="매너"
         mannerKeywords={mannerData.mannerKeywords}
       />
       <Container
-        keywords={MANNER_KEYWORDS_BAD}
+        keywords={MANNER_KEYWORDS.BAD}
         label="비매너"
         mannerKeywords={mannerData.mannerKeywords}
       />
@@ -37,7 +41,7 @@ function Container({ label, keywords, mannerKeywords }: ContainerProps) {
           const mannerKeywordsGood =
             mannerKeywords.find((v) => v.mannerKeywordId === i + 1)?.count ?? 0;
           const mannerKeywordsBad =
-            mannerKeywords.find((v) => v.mannerKeywordId === MANNER_KEYWORDS_GOOD.length + 1)
+            mannerKeywords.find((v) => v.mannerKeywordId === MANNER_KEYWORDS.BAD.length + 1)
               ?.count ?? 0;
 
           return (

@@ -1,30 +1,29 @@
 import { create } from "zustand";
 
 type ModalStore = {
-  isBoardDetailModalOpen: boolean;
-  isPostModalOpen: boolean;
   isChatWidgetOpen: boolean;
+  isPostModalOpen: boolean;
+  isEditModalOpen: boolean;
 
-  toggleBoardDetailModal: () => void;
-  togglePostModal: () => void;
   toggleChatWidget: () => void;
+  togglePostModal: () => void;
+  toggleEditModal: () => void;
 };
-
 export const useModalStore = create<ModalStore>()((set) => ({
-  isBoardDetailModalOpen: true,
-  isPostModalOpen: true,
   isChatWidgetOpen: false,
+  isPostModalOpen: false,
+  isEditModalOpen: false,
 
-  toggleBoardDetailModal: () =>
+  toggleChatWidget: () =>
     set((state) => ({
-      isBoardDetailModalOpen: !state.isBoardDetailModalOpen
+      isChatWidgetOpen: !state.isChatWidgetOpen
     })),
   togglePostModal: () =>
     set((state) => ({
       isPostModalOpen: !state.isPostModalOpen
     })),
-  toggleChatWidget: () =>
+  toggleEditModal: () =>
     set((state) => ({
-      isChatWidgetOpen: !state.isChatWidgetOpen
+      isEditModalOpen: !state.isEditModalOpen
     }))
 }));

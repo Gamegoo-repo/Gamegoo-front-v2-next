@@ -2,10 +2,12 @@
 
 import { EllipsisVertical, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import { cn } from "@/shared/libs/cn";
+import { normalizeSearchParam } from "@/shared/libs/normalizeSearchParam";
 import { toastMessage } from "@/shared/model";
+import { useModalStore } from "@/shared/store";
 import { AlertModal } from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
 import {
@@ -25,15 +27,15 @@ import {
   DropdownMenuTrigger
 } from "@/shared/ui/dropdown-menu";
 
-import { BoardDetailModalViewType } from "@/entities/board";
+import { BoardTabs } from "@/entities/board/model/types/types";
 import { ProfileIcon } from "@/entities/profile";
 
-import { ReportModal } from "@/features/board";
+import { ReportModal, useBoardStore } from "@/features/board";
 import { useBlockUserMutation, useFriendRequestMutation } from "@/features/profile";
 
 type DialogModalProps = {
   open: boolean;
-  onOpenChange: () => void;
+  onOpenChange?: () => void;
   description: string;
   imgNum: number;
   name: string;
@@ -45,7 +47,7 @@ type DialogModalProps = {
   blocked?: boolean;
   items: {
     id: string;
-    viewType?: BoardDetailModalViewType["id"];
+    boardTab?: BoardTabs;
     isPost?: boolean;
     content: React.ReactNode;
   }[];
@@ -53,6 +55,7 @@ type DialogModalProps = {
   submit: React.ReactNode;
   activeProfileDropdown?: boolean;
   routeBack?: boolean;
+  fromExternal?: boolean;
   disableInteractOutside?: boolean;
 };
 
@@ -73,6 +76,7 @@ export function DialogModal({
   submit,
   activeProfileDropdown,
   routeBack = false,
+  fromExternal = false,
   disableInteractOutside
 }: DialogModalProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -80,26 +84,41 @@ export function DialogModal({
   const [isBlockUserModalOpen, setIsBlockUserModalOpen] = useState(false);
   const [isUnBlockUserModalOpen, setIsUnBlockUserModalOpen] = useState(false);
 
+  const boardTab = useBoardStore((s) => s.boardTab);
+  const setBoardTab = useBoardStore((s) => s.setBoardTab);
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const blockUser = useBlockUserMutation();
 
-  useEffect(() => {
-    if (!open && routeBack) {
-      onOpenChange();
-      router.back();
-    }
-  }, [open, router, routeBack, onOpenChange]);
-
   return (
     <>
       <Dialog
         open={open}
-        onOpenChange={onOpenChange}
+        onOpenChange={(open) => {
+          if (!open) {
+            if (fromExternal) {
+              router.push(`/board?page=${normalizeSearchParam(searchParams.get("page"))}`);
+            } else if (routeBack) {
+              router.back();
+            }
+
+            setTimeout(() => {
+              setBoardTab("in-game");
+            }, 100);
+          }
+
+          if (onOpenChange) onOpenChange();
+        }}
       >
         <DialogContent
           className="flex max-h-[95dvh] min-w-xl flex-col rounded-2xl bg-gray-200"
+          onPointerDownOutside={(e) => {
+            if (e.target instanceof Element && e.target.closest("[data-sonner-toast]")) {
+              e.preventDefault();
+            }
+          }}
           showCloseButton={false}
           onInteractOutside={(e) => {
             if (disableInteractOutside) e.preventDefault();
@@ -157,7 +176,14 @@ focus-visible:ring-offset-gray-200`,
                 )}
               </header>
 
-              <DialogClose asChild>
+              <DialogClose
+                asChild
+                onClick={() => {
+                  if (fromExternal) {
+                    router.push(`/board/${normalizeSearchParam(searchParams.get("page"))}`);
+                  }
+                }}
+              >
                 <Button
                   className="hover:bg-gray-300 focus-visible:ring-offset-gray-200"
                   variant="ghost"
@@ -175,7 +201,7 @@ focus-visible:ring-offset-gray-200`,
           {nav}
           <ul className="space-y-6 overflow-auto rounded-xl px-2">
             {items
-              .filter(({ viewType, isPost }) => searchParams.get("viewType") === viewType || isPost)
+              .filter((item) => boardTab === item.boardTab || item.isPost)
               .map(({ id, content }) => {
                 return <li key={id}>{content}</li>;
               })}
@@ -260,16 +286,18 @@ function DropdownComp({
         side="right"
       >
         <DropdownMenuGroup className="*:px-3 *:py-2 *:hover:bg-gray-200">
-          <DropdownMenuItem
-            className="a11y-focus-within-bg rounded-t-lg"
-            onClick={() =>
-              myMemberId === friendRequestMemberId
-                ? friendRequest.mutate({ memberId, type: "cancel" })
-                : friendRequest.mutate({ memberId, type: "request" })
-            }
-          >
-            {myMemberId === friendRequestMemberId ? "친구 요청 취소" : "친구 추가"}
-          </DropdownMenuItem>
+          {myMemberId && (
+            <DropdownMenuItem
+              className="a11y-focus-within-bg rounded-t-lg"
+              onClick={() =>
+                myMemberId === friendRequestMemberId
+                  ? friendRequest.mutate({ memberId, type: "cancel" })
+                  : friendRequest.mutate({ memberId, type: "request" })
+              }
+            >
+              {myMemberId === friendRequestMemberId ? "친구 요청 취소" : "친구 추가"}
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem
             className="a11y-focus-within-bg"
             onClick={() => {
@@ -290,14 +318,16 @@ function DropdownComp({
           >
             신고하기
           </DropdownMenuItem>
-          <DropdownMenuItem
-            className="a11y-focus-within-bg rounded-b-lg"
-            onClick={() =>
-              blocked ? setIsUnblockUserModalOpen(true) : setIsBlockUserModalOpen(true)
-            }
-          >
-            {blocked ? "차단 해제" : "차단하기"}
-          </DropdownMenuItem>
+          {myMemberId && (
+            <DropdownMenuItem
+              className="a11y-focus-within-bg rounded-b-lg"
+              onClick={() =>
+                blocked ? setIsUnblockUserModalOpen(true) : setIsBlockUserModalOpen(true)
+              }
+            >
+              {blocked ? "차단 해제" : "차단하기"}
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

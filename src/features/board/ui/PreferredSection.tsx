@@ -2,15 +2,8 @@
 
 import { OuterBox } from "@/shared/ui/board-detail-modal";
 
-import {
-  ChampionStatsResponseList,
-  MemberRecentStats,
-  Mic,
-  PreferredGameMode,
-  RecentPreferredChampions
-} from "@/entities/board";
-
-import { GameMode } from "@/features/board";
+import { MicStatus, PreferredGameMode, RecentPreferredChampions } from "@/entities/board";
+import { ChampionStatsResponseList, GameMode, MemberRecentStats } from "@/entities/post";
 
 type PreferredSectionProps = {
   gameMode: GameMode;
@@ -37,7 +30,7 @@ export function PreferredSection({
         sectionClassName="max-w-fit"
         label="마이크"
       >
-        <Mic mic={mic} />
+        <MicStatus mic={mic} />
       </OuterBox>
 
       <OuterBox label="최근 선호 챔피언">

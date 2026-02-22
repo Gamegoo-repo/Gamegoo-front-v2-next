@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 
 import { Textarea } from "@/shared/ui/textarea";
 
-import type { PostForm } from "@/features/board";
+import { PostForm } from "@/entities/board";
 
 export function Comment() {
   const { register, watch } = useFormContext<PostForm>();

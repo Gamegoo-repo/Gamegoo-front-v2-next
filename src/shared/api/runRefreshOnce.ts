@@ -16,7 +16,7 @@ async function requestRefresh(): Promise<RefreshResult> {
   const res = await fetch(REFRESH_ENDPOINT, {
     method: "POST",
     credentials: "include",
-    cache: "no-store",
+    cache: "no-store"
   });
 
   if (!res.ok) {
@@ -42,11 +42,7 @@ async function safeReadMessage(res: Response): Promise<string | undefined> {
 }
 
 function shouldRetryRefresh(result: RefreshResult) {
-  return (
-    !result.ok &&
-    result.status === 401 &&
-    result.message === RETRY_MESSAGE
-  );
+  return !result.ok && result.status === 401 && result.message === RETRY_MESSAGE;
 }
 
 function applyAccessToken(accessToken: string) {

@@ -30,6 +30,12 @@ const nextConfig: NextConfig = {
     fileLoaderRule.exclude = /\.svg$/i;
 
     return config;
+  },
+
+  logging: {
+    fetches: {
+      fullUrl: true
+    }
   }
 };
 

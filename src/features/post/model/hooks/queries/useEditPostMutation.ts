@@ -3,13 +3,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import { revalidateCacheTag } from "@/shared/api";
 import { clientSideOpenapiClient } from "@/shared/api/clientSideOpenapiClient";
+import { CACHE_KEYS } from "@/shared/constants";
 import { toastMessage } from "@/shared/model";
 
-import { POST_QUERYKEYS } from "@/entities/post";
-import { POST_DETAIL_QUERY_KEYS } from "@/entities/post/constants/postDetail.queryKeys";
-
-import { PostBody } from "@/features/board";
+import { PostBody } from "@/entities/board";
+import { POST_QUERY_KEYS } from "@/entities/post";
 
 export const useEditPostMutation = () => {
   const queryClient = useQueryClient();
@@ -24,22 +24,24 @@ export const useEditPostMutation = () => {
             boardId: Number(boardId)
           }
         },
-        body
+        body,
+        cache: "no-store"
       });
 
       if (error) throw error;
     },
 
-    onSuccess: (_, vars) => {
-      queryClient.invalidateQueries({
-        queryKey: POST_DETAIL_QUERY_KEYS.detail(vars.boardId.toString())
-      });
-      queryClient.invalidateQueries({
-        queryKey: POST_QUERYKEYS.PostList
-      });
+    onSuccess: () => {
+      revalidateCacheTag(CACHE_KEYS.board.all);
 
-      router.replace(`/board/?page=${searchParams.get("page")}`);
-      toastMessage.success("게시물이 수정되었습니다.");
+      queryClient
+        .invalidateQueries({
+          queryKey: POST_QUERY_KEYS.all
+        })
+        .then(() => {
+          router.replace(`/board/?page=${searchParams.get("page")}`);
+          toastMessage.success("게시물이 수정되었습니다.");
+        });
     }
   });
 };

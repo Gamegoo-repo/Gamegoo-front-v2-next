@@ -52,7 +52,7 @@ export const useFriendRequestMutation = () => {
       if (variables.type === "cancel") toastMessage.success("친구 요청을 취소했습니다.");
 
       queryClient.invalidateQueries({
-        queryKey: OTHER_PROFILE_QUERY_KEYS.memberId(variables.memberId)
+        queryKey: OTHER_PROFILE_QUERY_KEYS.detail(variables.memberId)
       });
     },
 

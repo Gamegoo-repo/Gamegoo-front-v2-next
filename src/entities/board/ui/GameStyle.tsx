@@ -9,7 +9,8 @@ export function GameStyle({ gameStyles }: { gameStyles: number[] }) {
           gameStyles.includes(v.gameStyleId) && (
             <Button
               key={v.gameStyleId}
-              className="cursor-default rounded-full border border-gray-300 bg-white hover:bg-white"
+              className="cursor-default rounded-full border border-gray-300 bg-white px-3
+hover:bg-white"
               variant="ghost"
               tabIndex={-1}
             >

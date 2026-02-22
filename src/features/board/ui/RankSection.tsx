@@ -2,8 +2,7 @@ import { getTierIcon } from "@/shared/model";
 import { OuterBox } from "@/shared/ui/board-detail-modal";
 
 import { Rank } from "@/entities/board";
-
-import { Tier } from "@/features/board";
+import { Tier } from "@/entities/post";
 
 type RankSectionProps = {
   soloTier: Tier;

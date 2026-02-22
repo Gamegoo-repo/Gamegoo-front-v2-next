@@ -7,7 +7,7 @@ import { cn } from "@/shared/libs/cn";
 import { winRateColor } from "@/shared/model";
 import { InnerBox } from "@/shared/ui/board-detail-modal";
 
-import { BoardDetailModalViewType, ChampionStatsResponseList } from "@/entities/board";
+import { BoardDetailModalViewType, ChampionStatsResponseList } from "@/entities/post";
 
 export function RecentPreferredChampions({
   championStatsResponseList

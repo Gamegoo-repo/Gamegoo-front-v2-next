@@ -8,7 +8,7 @@ const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax" as const,
-  path: "/",
+  path: "/"
 };
 
 export const authCookies = {
@@ -21,7 +21,7 @@ export const authCookies = {
   //NextResponse에 refreshToken 세팅
   setRefreshToken(res: NextResponse, refreshToken: string) {
     res.cookies.set(REFRESH_TOKEN_KEY, refreshToken, {
-      ...cookieOptions,
+      ...cookieOptions
     });
   },
 
@@ -29,15 +29,15 @@ export const authCookies = {
   clearRefreshToken(res: NextResponse) {
     res.cookies.set(REFRESH_TOKEN_KEY, "", {
       ...cookieOptions,
-      maxAge: 0,
+      maxAge: 0
     });
   },
 
   //CSRF 토큰 세팅 (httpOnly로 둘지 여부는 정책 선택)
-  setCsrfToken(res: NextResponse, token: string,  maxAge?: number) {
+  setCsrfToken(res: NextResponse, token: string, maxAge?: number) {
     res.cookies.set(CSRF_TOKEN_KEY, token, {
       ...cookieOptions,
-      maxAge,
+      maxAge
     });
   },
 
@@ -51,7 +51,19 @@ export const authCookies = {
   clearCsrfToken(res: NextResponse) {
     res.cookies.set(CSRF_TOKEN_KEY, "", {
       ...cookieOptions,
-      maxAge: 0,
+      maxAge: 0
     });
   },
+
+  // cookie에 accessToken 저장
+  async setAccessToken(res: NextResponse, accessToken: string) {
+    res.cookies.set("accessToken", accessToken, cookieOptions);
+  },
+
+  async clearAccessToken(res: NextResponse) {
+    res.cookies.set("accessToken", "", {
+      ...cookieOptions,
+      maxAge: 0
+    });
+  }
 };

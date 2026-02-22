@@ -5,7 +5,8 @@ import { useFormContext } from "react-hook-form";
 import { GAME_MODE } from "@/shared/constants";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/shared/ui/dropdown";
 
-import type { GameMode, PostForm } from "@/features/board";
+import { PostForm } from "@/entities/board";
+import { GameMode } from "@/entities/post";
 
 export function PreferredGameMode() {
   const { watch, setValue } = useFormContext<PostForm>();

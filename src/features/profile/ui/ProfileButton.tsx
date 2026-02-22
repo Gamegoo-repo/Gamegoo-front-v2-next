@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { useAuthStore } from "@/features/auth";
-import { useFetchProfileQuery } from "../model/hooks/queries/useFetchProfileQuery";
+import { useFetchMyProfileQuery } from "@/features/profile";
 
 export const modalItems = [
   { label: "내 정보", href: "profile" },
@@ -19,8 +19,7 @@ export function ProfileButton() {
   const [isOpen, setIsOpen] = useState(false);
   const { clearAuth } = useAuthStore();
   const modalRef = useRef<HTMLElement>(null);
-  const { data: userInfo } = useFetchProfileQuery()
-  
+  const { data: userInfo } = useFetchMyProfileQuery();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -37,7 +36,6 @@ export function ProfileButton() {
   }, []);
 
   if (!userInfo) return null;
-
 
   return (
     <div className="relative w-40">
@@ -60,13 +58,10 @@ export function ProfileButton() {
                   key={label}
                   className="cursor-pointer text-left"
                   onClick={async () => {
-                    await fetch(
-                      `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/logout`,
-                      {
-                        method: "POST",
-                        credentials: "include"
-                      }
-                    );
+                    await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/logout`, {
+                      method: "POST",
+                      credentials: "include"
+                    });
 
                     clearAuth();
                     setIsOpen(false);

@@ -25,7 +25,7 @@ export function Pagination({ totalPages, currentPage }: PaginationProps) {
     <div className="flex items-center gap-4">
       {currentPage > 1 ? (
         <Button
-          className="size-[40px] rounded-full"
+          className="size-8 rounded-full"
           asChild
           variant="ghost"
         >
@@ -37,12 +37,12 @@ export function Pagination({ totalPages, currentPage }: PaginationProps) {
         <ChevronLeft />
       )}
 
-      <ol className="flex gap-[17px]">
+      <ol className="flex gap-4">
         {Array.from({ length: totalPages }).map((_, i) => {
           return (
             <li key={i}>
               <Button
-                className="size-[40px] rounded-full"
+                className="size-8 rounded-full"
                 variant="ghost"
                 asChild
                 onClick={() => window.scrollTo({ top: 0 })}
@@ -50,7 +50,7 @@ export function Pagination({ totalPages, currentPage }: PaginationProps) {
                 <Link
                   href={setParams(i + 1)}
                   className={cn(
-                    "text-[14px] hover:bg-gray-200",
+                    "hover:bg-gray-200",
                     currentPage === i + 1 &&
                       "bg-violet-600 font-[700] text-white hover:bg-violet-400"
                   )}
@@ -65,7 +65,7 @@ export function Pagination({ totalPages, currentPage }: PaginationProps) {
 
       {currentPage !== totalPages ? (
         <Button
-          className="size-[40px] rounded-full"
+          className="size-8 rounded-full"
           asChild
           variant="ghost"
         >

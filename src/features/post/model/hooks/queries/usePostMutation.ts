@@ -1,38 +1,45 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
+import { revalidateCacheTag } from "@/shared/api";
 import { clientSideOpenapiClient } from "@/shared/api/clientSideOpenapiClient";
+import { CACHE_KEYS } from "@/shared/constants";
 import { toastMessage } from "@/shared/model";
 
-import { POST_QUERYKEYS } from "@/entities/post";
-
-import { PostBody } from "@/features/board";
+import { PostBody } from "@/entities/board";
+import { POST_QUERY_KEYS } from "@/entities/post";
 
 export const usePostMutation = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   return useMutation({
     mutationFn: async ({ body }: { body: PostBody }) => {
-      const { error } = await clientSideOpenapiClient.POST("/api/v2/posts", { body });
+      const { error } = await clientSideOpenapiClient.POST("/api/v2/posts", {
+        body,
+        cache: "no-store"
+      });
 
       if (error) throw error;
     },
 
     onSuccess: () => {
-      toastMessage.success("게시물이 작성되었습니다.");
-      router.replace(`/board/?page=${searchParams.get("page")}`);
+      revalidateCacheTag(CACHE_KEYS.board.all);
 
-      queryClient.invalidateQueries({
-        queryKey: POST_QUERYKEYS.PostList
-      });
+      queryClient
+        .invalidateQueries({
+          queryKey: POST_QUERY_KEYS.all
+        })
+        .then(() => {
+          toastMessage.success("게시글이 작성되었습니다.");
+          router.replace("/board/?page=1");
+        });
     },
 
     onError: () => {
-      toastMessage.error("이미 존재하는 글입니다.");
+      toastMessage.error("5분 후 다시 시도해 주세요.");
     }
   });
 };

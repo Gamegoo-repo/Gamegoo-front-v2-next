@@ -1,8 +1,7 @@
 export { BoardTable } from "./ui/BoardTable";
 export { RefetchButton } from "./ui/RefetchButton";
 export { Bump } from "./ui/Bump";
-export { ModalContainer } from "./ui/ModalContainer";
-export { Post } from "./ui/Post";
+export { PostContainer } from "./ui/PostContainer";
 export { MainAndSubPosition } from "./ui/MainAndSubPosition";
 export { WantPosition } from "./ui/WantPosition";
 export { PreferredGameMode } from "./ui/PreferredGameMode";
@@ -11,7 +10,7 @@ export { MicSwitch } from "./ui/MicSwitch";
 export { Comment } from "./ui/Comment";
 export { Pagination } from "./ui/Pagination";
 export { PositionSelectButton } from "./ui/PositionSelectButton";
-export { ViewTypeSection } from "./ui/ViewTypeSection";
+export { BoardTabSection } from "./ui/BoardTabSection";
 export { PositionSection } from "./ui/PositionSection";
 export { RankSection } from "./ui/RankSection";
 export { PreferredSection } from "./ui/PreferredSection";
@@ -26,19 +25,7 @@ export { MannerLevelSection } from "./ui/MannerLevelSection";
 export { MannerKeywords } from "./ui/MannerKeywords";
 export { ReportModal } from "./ui/ReportModal";
 
-export type {
-  BoardData,
-  BoardList,
-  PostBody,
-  MainPosition,
-  SubPosition,
-  GameMode,
-  PostForm,
-  Mic,
-  Tier,
-  Position,
-  MannerData
-} from "./model/types";
-
 export { useBumpMutation } from "./model/hooks/queries/useBumpMutation";
-export { useGetMannerDataQuery } from "./model/hooks/queries/useGetMannerDataQuery";
+export { useFetchMannerDataQuery } from "./model/hooks/queries/useFetchMannerDataQuery";
+
+export { useBoardStore } from "./model/store/board.store";

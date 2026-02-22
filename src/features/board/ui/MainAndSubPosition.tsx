@@ -5,9 +5,7 @@ import { useFormContext } from "react-hook-form";
 
 import { Button } from "@/shared/ui/button";
 
-import { SelectPosition } from "@/entities/board";
-
-import { PostForm } from "@/features/board";
+import { PostForm, SelectPosition } from "@/entities/board";
 
 export function MainAndSubPosition() {
   const { getValues, setValue } = useFormContext<PostForm>();

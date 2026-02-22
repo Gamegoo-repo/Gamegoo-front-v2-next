@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { clientSideOpenapiClient } from "@/shared/api/clientSideOpenapiClient";
 import { toastMessage } from "@/shared/model";
 
-import { POST_QUERYKEYS } from "@/entities/post";
+import { POST_QUERY_KEYS } from "@/entities/post";
 import { OTHER_PROFILE_QUERY_KEYS } from "@/entities/profile";
 
 export const useBlockUserMutation = () => {
@@ -41,10 +41,10 @@ export const useBlockUserMutation = () => {
       if (variables.type === "unblock") toastMessage.success("차단을 해제했습니다.");
 
       queryClient.invalidateQueries({
-        queryKey: POST_QUERYKEYS.PostList
+        queryKey: POST_QUERY_KEYS.all
       });
       queryClient.invalidateQueries({
-        queryKey: OTHER_PROFILE_QUERY_KEYS.memberId(variables.memberId)
+        queryKey: OTHER_PROFILE_QUERY_KEYS.detail(variables.memberId)
       });
     }
   });

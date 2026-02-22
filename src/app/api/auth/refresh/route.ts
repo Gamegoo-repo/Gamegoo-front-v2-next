@@ -1,6 +1,7 @@
+import { NextResponse } from "next/server";
+
 import { serverSideOpenapiClient } from "@/shared/api/serverSideOpenApiClient";
 import { authCookies } from "@/shared/libs/cookies/cookies";
-import { NextResponse } from "next/server";
 
 export const POST = async () => {
   /**
@@ -9,21 +10,15 @@ export const POST = async () => {
   const refreshToken = await authCookies.getRefreshToken();
 
   if (!refreshToken) {
-    return NextResponse.json(
-      { message: "refreshToken not found" },
-      { status: 401 }
-    );
+    return NextResponse.json({ message: "refreshToken not found" }, { status: 401 });
   }
 
   /**
    * 2) refresh API 호출
    */
-  const { data, error } = await serverSideOpenapiClient.POST(
-    "/api/v2/auth/refresh",
-    {
-      body: { refreshToken },
-    }
-  );
+  const { data, error } = await serverSideOpenapiClient.POST("/api/v2/auth/refresh", {
+    body: { refreshToken }
+  });
 
   const nextAccessToken = data?.data?.accessToken;
   const nextRefreshToken = data?.data?.refreshToken;
@@ -32,10 +27,7 @@ export const POST = async () => {
    * 3) refresh 실패 시: 쿠키 제거 후 401 반환
    */
   if (error || !nextAccessToken || !nextRefreshToken) {
-    const res = NextResponse.json(
-      { message: "refreshToken invalid" },
-      { status: 401 }
-    );
+    const res = NextResponse.json({ message: "refreshToken invalid" }, { status: 401 });
 
     authCookies.clearRefreshToken(res);
 
@@ -48,7 +40,7 @@ export const POST = async () => {
   const res = NextResponse.json({ accessToken: nextAccessToken });
 
   authCookies.setRefreshToken(res, nextRefreshToken);
-
+  authCookies.setAccessToken(res, nextAccessToken);
 
   return res;
 };

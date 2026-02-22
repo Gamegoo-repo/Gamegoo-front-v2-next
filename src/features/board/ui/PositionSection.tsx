@@ -2,8 +2,7 @@ import { getPositionIcon } from "@/shared/model";
 import { OuterBox } from "@/shared/ui/board-detail-modal";
 
 import { MainOrSubPosition, WantPosition } from "@/entities/board";
-
-import { Position } from "@/features/board";
+import { Position } from "@/entities/post";
 
 type PositionSectionProps = {
   mainP: Position;

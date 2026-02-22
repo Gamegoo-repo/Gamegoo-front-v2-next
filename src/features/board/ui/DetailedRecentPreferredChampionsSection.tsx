@@ -5,7 +5,7 @@ import { winRateColor } from "@/shared/model";
 import { OuterBox } from "@/shared/ui/board-detail-modal";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table";
 
-import { ChampionStatsResponseList } from "@/entities/board";
+import { ChampionStatsResponseList } from "@/entities/post";
 
 export function DetailedRecentPreferredChampionsSection({
   championStatsResponseList

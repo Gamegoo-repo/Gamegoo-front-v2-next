@@ -2,7 +2,7 @@ import { cn } from "@/shared/libs/cn";
 import { winRateColor } from "@/shared/model";
 import { InnerBox, OuterBox } from "@/shared/ui/board-detail-modal";
 
-import { RecentData } from "@/entities/board";
+import { RecentData } from "@/entities/post";
 
 export function RecentMatchesSection({ recentData }: { recentData: RecentData }) {
   return (

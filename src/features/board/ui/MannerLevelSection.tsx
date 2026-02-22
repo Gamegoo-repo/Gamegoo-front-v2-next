@@ -3,9 +3,11 @@ import { Check } from "lucide-react";
 import { cn } from "@/shared/libs/cn";
 import { InnerBox, OuterBox } from "@/shared/ui/board-detail-modal";
 
-import { MannerData } from "@/features/board";
+import { MannerData } from "@/entities/post";
 
-export function MannerLevelSection({ mannerData }: { mannerData: MannerData }) {
+export function MannerLevelSection({ mannerData }: { mannerData: MannerData | undefined }) {
+  if (!mannerData) return null;
+
   return (
     <OuterBox label="매너 레벨">
       <InnerBox className="relative flex items-start justify-between px-6!">

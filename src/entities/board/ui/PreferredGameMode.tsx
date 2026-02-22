@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 
 import { InnerBox } from "@/shared/ui/board-detail-modal";
 
-import { GameMode } from "@/features/board";
+import { GameMode } from "@/entities/post";
 
 export function PreferredGameMode({ gameMode }: { gameMode: GameMode }) {
   const preferredGameMode = (gameMode: string) => {

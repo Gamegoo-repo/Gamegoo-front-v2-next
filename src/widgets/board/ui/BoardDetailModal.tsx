@@ -4,7 +4,7 @@ import { useModalStore } from "@/shared/store";
 import { DialogModal } from "@/shared/ui/dialog";
 
 import {
-  type BoardData,
+  BoardTabSection,
   CommentSection,
   CreatedAtSection,
   DetailedRecentPreferredChampionsSection,
@@ -16,124 +16,123 @@ import {
   RankSection,
   RecentMatchesSection,
   TalkSection,
-  ViewTypeSection,
-  WinRateSection
+  WinRateSection,
+  useFetchMannerDataQuery
 } from "@/features/board";
-import { useGetMannerDataQuery } from "@/features/board/";
-import { usePostDetailQuery } from "@/features/post";
-import { useFetchProfileQuery, useGetOtherProfileQuery } from "@/features/profile";
+import { useFetchPostDetailSuspenseQuery } from "@/features/post";
+import { useFetchMyProfileQuery, useFetchOtherProfileQuery } from "@/features/profile";
 
 type BoardDetailModalProps = {
-  boardId: string;
-  boardData: BoardData;
+  boardId: number;
+  fromExternal?: boolean;
 };
 
-export function BoardDetailModal({ boardId, boardData }: BoardDetailModalProps) {
-  const { data: userInfo } = usePostDetailQuery(boardId, boardData);
-  const { data: mannerData } = useGetMannerDataQuery(boardId, boardData);
-  const { data: userDetail } = useGetOtherProfileQuery(boardData!.memberId!);
-  const { data: myProfile } = useFetchProfileQuery();
-
-  const open = useModalStore((s) => s.isBoardDetailModalOpen);
-  const onOpenChange = useModalStore((s) => s.toggleBoardDetailModal);
-
-  if (!boardData || !userInfo || !mannerData || !userDetail) return null;
+export function BoardDetailModal({ boardId, fromExternal }: BoardDetailModalProps) {
+  const { data: boardData } = useFetchPostDetailSuspenseQuery(boardId);
+  const { data: myProfile } = useFetchMyProfileQuery();
+  const { data: otherProfile } = useFetchOtherProfileQuery(boardData.memberId!, myProfile?.id);
+  const { data: mannerData } = useFetchMannerDataQuery(boardData.memberId!);
 
   return (
     <DialogModal
-      name={userInfo.gameName}
-      open={open}
+      name={boardData.gameName}
+      open={true}
       myMemberId={myProfile?.id}
-      onOpenChange={onOpenChange}
-      imgNum={userInfo.profileImage}
-      blocked={userDetail?.blocked}
-      tag={userInfo.tag}
-      memberId={userInfo.memberId}
-      boardId={userInfo.boardId}
-      friendRequestMemberId={userDetail!.friendRequestMemberId}
+      imgNum={boardData.profileImage}
+      blocked={otherProfile?.blocked}
+      tag={boardData.tag}
+      memberId={boardData.memberId}
+      boardId={boardData.boardId}
+      friendRequestMemberId={otherProfile?.friendRequestMemberId}
       description="상세 게시글"
       activeProfileDropdown
       routeBack
-      nav={<ViewTypeSection />}
-      submit={<TalkSection boardId={userInfo.boardId} />}
+      fromExternal={fromExternal}
+      nav={<BoardTabSection />}
+      submit={
+        <TalkSection
+          boardData={boardData}
+          myMemberId={myProfile?.id}
+        />
+      }
       items={[
         {
           id: "rank",
-          viewType: "in-game",
+          boardTab: "in-game",
           content: (
             <RankSection
-              soloTier={userInfo.soloTier}
-              soloRank={userInfo.soloRank}
-              freeTier={userInfo.freeTier}
-              freeRank={userInfo.freeRank}
+              soloTier={boardData.soloTier}
+              soloRank={boardData.soloRank}
+              freeTier={boardData.freeTier}
+              freeRank={boardData.freeRank}
             />
           )
         },
         {
           id: "position",
-          viewType: "in-game",
+          boardTab: "in-game",
           content: (
             <PositionSection
-              mainP={userInfo.mainP}
-              subP={userInfo.subP}
-              wantP={userInfo.wantP}
+              mainP={boardData.mainP}
+              subP={boardData.subP}
+              wantP={boardData.wantP}
             />
           )
         },
         {
           id: "preferred",
-          viewType: "in-game",
+          boardTab: "in-game",
           content: (
             <PreferredSection
-              gameMode={userInfo.gameMode}
-              mic={userInfo.mike === "AVAILABLE" ? true : false}
-              championStatsResponseList={userInfo.championStatsResponseList}
-              memberRecentStats={userInfo.memberRecentStats}
+              gameMode={boardData.gameMode}
+              mic={boardData.mike === "AVAILABLE" ? true : false}
+              championStatsResponseList={boardData.championStatsResponseList}
+              memberRecentStats={boardData.memberRecentStats}
             />
           )
         },
         {
           id: "winRate",
-          viewType: "in-game",
-          content: <WinRateSection winRate={userInfo.winRate!} />
+          boardTab: "in-game",
+          content: <WinRateSection winRate={boardData.winRate!} />
         },
         {
           id: "gameStyle",
-          viewType: "in-game",
-          content: <GameStyleSection gameStyles={userInfo.gameStyles} />
+          boardTab: "in-game",
+          content: <GameStyleSection gameStyles={boardData.gameStyles} />
         },
         {
           id: "comment",
-          viewType: "in-game",
-          content: <CommentSection comment={userInfo.contents ?? ""} />
+          boardTab: "in-game",
+          content: <CommentSection comment={boardData.contents ?? ""} />
         },
         {
           id: "createdAt",
-          viewType: "in-game",
-          content: <CreatedAtSection createdAt={userInfo.createdAt} />
+          boardTab: "in-game",
+          content: <CreatedAtSection createdAt={boardData.createdAt} />
         },
         {
           id: "recentMatch",
-          viewType: "recent-match",
-          content: <RecentMatchesSection recentData={userInfo.memberRecentStats} />
+          boardTab: "recent-match",
+          content: <RecentMatchesSection recentData={boardData.memberRecentStats} />
         },
         {
           id: "detailedRecentPreferredChampions",
-          viewType: "recent-match",
+          boardTab: "recent-match",
           content: (
             <DetailedRecentPreferredChampionsSection
-              championStatsResponseList={userInfo.championStatsResponseList}
+              championStatsResponseList={boardData.championStatsResponseList}
             />
           )
         },
         {
           id: "mannerLevel",
-          viewType: "manners",
+          boardTab: "manner",
           content: <MannerLevelSection mannerData={mannerData} />
         },
         {
           id: "mannerKeywords",
-          viewType: "manners",
+          boardTab: "manner",
           content: <MannerKeywords mannerData={mannerData} />
         }
       ]}

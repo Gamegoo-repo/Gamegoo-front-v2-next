@@ -1,6 +1,4 @@
 export { Header } from "./ui/Header";
-export { Board } from "./ui/Board";
+export { BoardContainer } from "./ui/BoardContainer";
 export { BoardDetailModal } from "./ui/BoardDetailModal";
-export { Post } from "./ui/Post";
 export { HeaderContainer } from "./ui/HeaderContainer";
-export { PostContainer } from "./ui/PostContainer";

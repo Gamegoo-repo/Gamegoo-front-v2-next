@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 
-import { POST_QUERYKEYS } from "@/entities/post";
+import { POST_QUERY_KEYS } from "@/entities/post";
 
 import { Header } from "@/widgets/board";
 
@@ -11,7 +11,7 @@ export function HeaderContainer() {
 
   const refetch = () => {
     queryClient.invalidateQueries({
-      queryKey: POST_QUERYKEYS.PostList
+      queryKey: POST_QUERY_KEYS.all
     });
   };
 

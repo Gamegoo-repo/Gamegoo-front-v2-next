@@ -17,7 +17,7 @@ import {
   PopoverTrigger
 } from "@/shared/ui/popover";
 
-import type { PostForm } from "@/features/board";
+import { PostForm } from "@/entities/board";
 
 type SelectPositionProps = {
   label: string;

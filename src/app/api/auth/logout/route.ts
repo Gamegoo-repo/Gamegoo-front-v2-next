@@ -1,6 +1,6 @@
-import { authCookies } from "@/shared/libs/cookies/cookies";
 import { NextResponse } from "next/server";
 
+import { authCookies } from "@/shared/libs/cookies/cookies";
 
 export const POST = async () => {
   /**
@@ -16,7 +16,7 @@ export const POST = async () => {
    * - secure → 운영 환경에서만 https로 전송
    */
   authCookies.clearRefreshToken(res);
-
+  authCookies.clearAccessToken(res);
 
   return res;
 };

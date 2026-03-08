@@ -149,6 +149,7 @@ overflow-y-scroll rounded-2xl border border-gray-200 bg-white shadow-lg"
                   <ViewTypeComp
                     viewType={viewType}
                     label="채팅방"
+                    unReadMessageCount={unReadMessageCount}
                     setViewType={setViewType}
                   />
                 </div>
@@ -174,30 +175,37 @@ overflow-y-scroll rounded-2xl border border-gray-200 bg-white shadow-lg"
 
 type ViewTypeCompProps = {
   label: ViewType;
+  unReadMessageCount?: number;
   viewType: ViewType;
   setViewType: Dispatch<SetStateAction<ViewType>>;
 };
 
-function ViewTypeComp({ label, viewType, setViewType }: ViewTypeCompProps) {
+function ViewTypeComp({ label, unReadMessageCount, viewType, setViewType }: ViewTypeCompProps) {
+  const selected = label === viewType;
+
   return (
     <div>
-      <Button
-        className="peer/view-type font-bold"
-        variant="ghost"
-        onClick={() => setViewType(label)}
-      >
-        {label}
-      </Button>
+      <div className="flex items-center">
+        <Button
+          className="peer/view-type gap-1 font-bold"
+          variant={selected ? "default" : "ghost"}
+          onClick={() => setViewType(label)}
+        >
+          <span>{label}</span>
 
-      <hr
-        className={cn(
-          viewType === label
-            ? `mx-auto mt-1 border border-violet-600
-peer-focus-visible/view-type:border-transparent`
-            : "hidden",
-          viewType === "친구 목록" ? "w-4/5" : "w-3/4"
-        )}
-      />
+          {unReadMessageCount && unReadMessageCount > 0 && (
+            <span
+              className={cn(
+                `flex size-4 items-center justify-center rounded-full bg-violet-600 text-xs
+text-white`,
+                selected && "bg-white text-violet-600"
+              )}
+            >
+              {unReadMessageCount}
+            </span>
+          )}
+        </Button>
+      </div>
     </div>
   );
 }

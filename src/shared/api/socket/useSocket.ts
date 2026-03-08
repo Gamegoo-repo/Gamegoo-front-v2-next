@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Socket, io } from "socket.io-client";
 
 import { SOCKET_EVENTS } from "@/shared/constants/socketEvents";
@@ -13,7 +13,7 @@ type Err = {
 
 export const useSocket = (accessToken: string) => {
   const [isConnected, setIsConnected] = useState(false);
-  const socketRef = useRef<Socket | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const HANDLERS = useMemo(
     () => ({
@@ -28,31 +28,33 @@ export const useSocket = (accessToken: string) => {
   // cleanup 단계에서 socket events를 비활성화하고, socket instance를 종료하며, socket ref를 null로 변경함
   // 따라서 accessToken이 변경되었을 때 새로운 socket instance를 생성할 수 있음
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessToken) {
+      setSocket(null);
+      return;
+    }
 
-    const socket = io("https://socket.gamegoo.co.kr", {
+    const newSocket = io("https://socket.gamegoo.co.kr", {
       auth: { token: accessToken }
     });
 
-    socketRef.current = socket;
+    setSocket(newSocket);
 
     Object.entries(HANDLERS).forEach(([event, handler]) => {
-      socket.on(event, handler);
+      newSocket.on(event, handler);
     });
 
     return () => {
       Object.entries(HANDLERS).forEach(([event, handler]) => {
-        socket.off(event, handler);
+        newSocket.off(event, handler);
       });
 
-      socket.disconnect();
-      socketRef.current = null;
+      newSocket.disconnect();
+      setSocket(null);
     };
-  }, [accessToken]);
+  }, [accessToken, HANDLERS]);
 
   return {
-    // eslint-disable-next-line
-    socket: socketRef.current,
+    socket,
     isConnected
   };
 };

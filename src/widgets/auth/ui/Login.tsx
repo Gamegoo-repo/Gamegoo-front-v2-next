@@ -34,7 +34,7 @@ export const Login = () => {
         </main>
 
         <footer>
-          <Link href="/https://signup.kr.riotgames.com">라이엇 계정 만들기</Link>
+          <Link href="https://signup.kr.riotgames.com">라이엇 계정 만들기</Link>
         </footer>
       </div>
     </div>

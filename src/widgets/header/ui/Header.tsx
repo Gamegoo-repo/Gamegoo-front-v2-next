@@ -1,10 +1,14 @@
+"use client";
+
 import { GamegooLogo } from "@/shared/ui/logo";
 
-import { LoginButton } from "@/features/auth";
+import { LoginButton, useAuthStore } from "@/features/auth";
+import Notification from "@/features/notification/ui/Notification";
 
 import { Nav } from "@/widgets/header";
 
-export async function Header() {
+export function Header() {
+  const { authStatus } = useAuthStore();
   return (
     <header className="flex justify-between">
       <div className="flex gap-8">
@@ -14,8 +18,10 @@ export async function Header() {
         />
         <Nav />
       </div>
-
-      <LoginButton />
+      <div className="flex items-center gap-[36px]">
+        {authStatus === "authenticated" && <Notification />}
+        <LoginButton />
+      </div>
     </header>
   );
 }

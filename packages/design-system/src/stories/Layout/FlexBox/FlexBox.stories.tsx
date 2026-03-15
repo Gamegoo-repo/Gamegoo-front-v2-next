@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { FlexBox } from "../../../components/layout/flexbox/Flexbox";
+import { FlexBox } from "../../../components/layout/flexbox/flexbox";
 import React from "react";
 
 const Box = ({ height = 40 }: { height?: number }) => (

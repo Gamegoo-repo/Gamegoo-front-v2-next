@@ -1,27 +1,18 @@
 "use client";
 
-import { EllipsisVertical, X } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 
 import { POSITION_ICONS, TIER_ICONS } from "@/shared/constants";
-import { REPORT_ITEMS } from "@/shared/constants/reportItems";
 import { cn } from "@/shared/libs/cn";
 import { formatTime } from "@/shared/libs/date/formatTime";
 import { toastMessage } from "@/shared/model";
+import { useModalStore } from "@/shared/store";
 import { AlertModal } from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
-import { Checkbox } from "@/shared/ui/checkbox";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle
-} from "@/shared/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,22 +28,25 @@ import {
   TableHeader,
   TableRow
 } from "@/shared/ui/table";
-import { Textarea } from "@/shared/ui/textarea";
 
-import { UserInfo } from "@/entities/auth";
-import { ProfileIcon } from "@/entities/profile";
+import { PostList } from "@/entities/post";
+import { MyProfile, ProfileIcon } from "@/entities/profile";
 
-import { BoardList } from "@/features/board";
-import { useBlockUserMutation, useDeletePostMutation } from "@/features/post";
-import { useReportMutation } from "@/features/post/model/hooks/queries/useReportMutation";
+import { ReportModal } from "@/features/board";
+import { Post, useDeletePostMutation } from "@/features/post";
+import { useBlockUserMutation } from "@/features/profile";
 
 type BoardTableProps = {
-  posts: NonNullable<BoardList>["boards"];
-  isLoading: boolean;
-  userInfo: UserInfo;
+  posts: PostList;
+  myProfile: MyProfile;
 };
 
-export function BoardTable({ posts, isLoading, userInfo }: BoardTableProps) {
+export function BoardTable({ posts, myProfile }: BoardTableProps) {
+  const [myPostBoardId, setMyPostBoardId] = useState<number>();
+
+  const isEditModalOpen = useModalStore((s) => s.isEditModalOpen);
+  const toggleEditModal = useModalStore((s) => s.toggleEditModal);
+
   return (
     <>
       <Table className="table-fixed">
@@ -74,13 +68,14 @@ export function BoardTable({ posts, isLoading, userInfo }: BoardTableProps) {
         </TableHeader>
 
         <TableBody>
-          {posts && !isLoading ? (
+          {posts ? (
             posts.map((v) => {
               return (
                 <BoardRow
                   key={`${v.boardId}-${v.memberId.toString()}`}
                   v={v}
-                  userInfo={userInfo}
+                  myProfile={myProfile}
+                  setMyPostBoardId={setMyPostBoardId}
                 />
               );
             })
@@ -89,19 +84,29 @@ export function BoardTable({ posts, isLoading, userInfo }: BoardTableProps) {
           )}
         </TableBody>
       </Table>
+
+      <Post
+        open={isEditModalOpen}
+        onOpenChange={toggleEditModal}
+        userInfo={myProfile}
+        myPostBoardId={myPostBoardId}
+      />
     </>
   );
 }
 
 type BoardRowProps = {
-  v: NonNullable<BoardList>["boards"][number];
-  userInfo: UserInfo;
+  v: PostList[number];
+  myProfile: MyProfile;
+  setMyPostBoardId: Dispatch<SetStateAction<number | undefined>>;
 };
 
-function BoardRow({ v, userInfo }: BoardRowProps) {
+function BoardRow({ v, myProfile, setMyPostBoardId }: BoardRowProps) {
   const [isBlockOpen, setIsBlockOpen] = useState(false);
   const [isUnblockOpen, setIsUnblockOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
+
+  const toggleEditModal = useModalStore((s) => s.toggleEditModal);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -120,8 +125,8 @@ function BoardRow({ v, userInfo }: BoardRowProps) {
   return (
     <>
       <TableRow
-        className="group a11y-focus-visible relative rounded-md outline-none *:border-b
-*:border-b-gray-300 *:py-[19px] hover:bg-gray-200"
+        className="group a11y-focus-visible relative rounded-md transition-none outline-none
+*:border-b *:border-b-gray-300 *:py-[19px] hover:bg-gray-200"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter") router.push(postDetailPageLink);
@@ -169,16 +174,17 @@ group-hover:opacity-100 hover:bg-gray-300 focus-visible:opacity-100"
         {/* 티어 */}
         <TableCell>
           <div className="flex items-center justify-center">
-            <div className="flex size-[34px] items-center justify-center">
+            <div className="flex size-10 items-center justify-center">
               <SoloTierIcon />
             </div>
+
             <span className="bold-16">{`${v.tier.at(0)}${v.tier.at(0) !== "U" ? v.rank : ""}`}</span>
           </div>
         </TableCell>
 
         {/* 주/부 포지션 */}
         <TableCell>
-          <div className="flex justify-center gap-[2px] *:size-[24px]">
+          <div className="flex justify-center gap-1 *:size-8">
             <MainPositionIcon />
             <SubPositionIcon />
           </div>
@@ -186,7 +192,7 @@ group-hover:opacity-100 hover:bg-gray-300 focus-visible:opacity-100"
 
         {/* 내가 찾는 포지션 */}
         <TableCell>
-          <div className="flex justify-center gap-[2px] *:size-[24px]">
+          <div className="flex justify-center gap-1 *:size-8">
             <WantMainPosition />
             {v.wantP[1] !== undefined && <WantSubPosition />}
           </div>
@@ -263,7 +269,7 @@ p-[8px]"
           <div className="flex items-center justify-between gap-[6px] text-gray-500">
             <p className="flex w-full justify-center">{formatTime(v.createdAt)}</p>
 
-            {userInfo && (
+            {myProfile && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -277,19 +283,19 @@ p-[8px]"
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent
-                  className="medium-14 w-[175px] rounded-[10px] border border-violet-300 bg-white
-p-0 text-gray-600 *:h-[43px] *:hover:bg-gray-200"
+                  className="medium-14 w-[175px] rounded-[10px] border border-gray-300 bg-white p-0
+text-gray-600 *:h-[43px] *:hover:bg-gray-200"
                   align="end"
                 >
-                  {v.memberId === userInfo.id ? (
+                  {v.memberId === myProfile.id ? (
                     <DropdownItemWrapper
+                      className="hover:text-gray-600!"
+                      onClick={() => {
+                        setMyPostBoardId(v.boardId);
+
+                        toggleEditModal();
+                      }}
                       label="수정하기"
-                      onClick={() =>
-                        router.push(
-                          `/board/post/${v.boardId}/edit/?page=${searchParams.get("page")}`,
-                          { scroll: false }
-                        )
-                      }
                     />
                   ) : (
                     <DropdownItemWrapper
@@ -297,9 +303,9 @@ p-0 text-gray-600 *:h-[43px] *:hover:bg-gray-200"
                       onClick={() => setIsReportOpen(true)}
                     />
                   )}
-                  {v.memberId === userInfo.id ? (
+                  {v.memberId === myProfile.id ? (
                     <DropdownItemWrapper
-                      className="text-red-500"
+                      className="hover:text-red-600!"
                       label="삭제하기"
                       onClick={() => deletePost.mutate(v.boardId)}
                     />
@@ -331,13 +337,7 @@ p-0 text-gray-600 *:h-[43px] *:hover:bg-gray-200"
         onOpenChange={setIsBlockOpen}
         action={() => blockUser.mutate({ memberId: v.memberId, type: "block" })}
         title="차단하시겠습니까?"
-        description={
-          <>
-            <span>차단한 상대에게는 메시지를 받을 수 없으며</span>
-            <br />
-            <span>매칭이 이루어지지 않습니다.</span>
-          </>
-        }
+        description="차단한 상대에게는 메시지를 받을 수 없으며 매칭이 이루어지지 않습니다."
         actionLabel="차단"
       />
 
@@ -353,9 +353,10 @@ p-0 text-gray-600 *:h-[43px] *:hover:bg-gray-200"
       />
 
       {/* 신고 */}
-      <Report
-        isReportOpen={isReportOpen}
-        setIsReportOpen={setIsReportOpen}
+      <ReportModal
+        name={v.gameName}
+        isReportModalOpen={isReportOpen}
+        setIsReportModalOpen={setIsReportOpen}
         memberId={v.memberId}
         boardId={v.boardId}
       />
@@ -372,7 +373,10 @@ type DropdownItemWrapperProps = {
 function DropdownItemWrapper({ label, onClick, className }: DropdownItemWrapperProps) {
   return (
     <DropdownMenuItem
-      className={cn("a11y-focus-visible-bg first:rounded-b-none last:rounded-t-none", className)}
+      className={cn(
+        "a11y-focus-visible-bg first:rounded-b-none last:rounded-t-none hover:bg-gray-200!",
+        className
+      )}
       onClick={() => onClick()}
       onKeyDown={(e) => e.stopPropagation()}
     >
@@ -402,108 +406,4 @@ function Skeleton() {
   }, []);
 
   return <>{skeletonRows}</>;
-}
-type ReportProps = {
-  isReportOpen: boolean;
-  setIsReportOpen: Dispatch<SetStateAction<boolean>>;
-  memberId: number;
-  boardId: number;
-};
-
-function Report({ isReportOpen, setIsReportOpen, memberId, boardId }: ReportProps) {
-  const [reportCodeList, setReportCodeList] = useState<number[]>([]);
-  const [reportContent, setReportContent] = useState("");
-
-  const report = useReportMutation();
-
-  return (
-    <Dialog
-      open={isReportOpen}
-      onOpenChange={setIsReportOpen}
-    >
-      <DialogContent
-        className="max-h-[90vh] overflow-y-scroll bg-white"
-        showCloseButton={false}
-      >
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="bold-20">유저 신고하기</DialogTitle>
-            <DialogClose asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-              >
-                <X />
-              </Button>
-            </DialogClose>
-          </div>
-          <DialogDescription className="sr-only">유저 신고</DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-8">
-          <div className="space-y-3">
-            <p className="semibold-18">신고 사유</p>
-
-            <ul className="space-y-[21px]">
-              {REPORT_ITEMS.map((v, i) => {
-                return (
-                  <li
-                    key={v}
-                    className="flex cursor-pointer items-center gap-2 *:cursor-pointer"
-                  >
-                    <Checkbox
-                      id={v}
-                      onCheckedChange={(isSelected: boolean) => {
-                        setReportCodeList((prev: number[]) =>
-                          isSelected ? [...prev, i] : prev.filter((item) => item !== i)
-                        );
-                      }}
-                      checked={reportCodeList.includes(i)}
-                    />
-                    <label
-                      className="regular-18"
-                      htmlFor={v}
-                    >
-                      {v}
-                    </label>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          <div className="space-y-3">
-            <p className="semibold-18">상세 내용</p>
-            <div>
-              <Textarea
-                className="h-20 border border-violet-300"
-                onChange={(e) => setReportContent(e.target.value)}
-                placeholder="내용을 입력하세요. (선택)"
-              />
-            </div>
-          </div>
-
-          <DialogClose asChild>
-            <Button
-              className="bold-14 h-16 w-full rounded-2xl"
-              disabled={reportCodeList.length === 0}
-              onClick={() => {
-                report.mutate({
-                  memberId: memberId,
-                  reportCodeList,
-                  pathCode: 1,
-                  contents: reportContent,
-                  boardId: boardId
-                });
-
-                setReportCodeList([]);
-              }}
-            >
-              신고하기
-            </Button>
-          </DialogClose>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
 }

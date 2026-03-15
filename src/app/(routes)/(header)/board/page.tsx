@@ -1,15 +1,28 @@
-"use client";
+import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { SearchParams, boardApi } from "@/entities/board";
+import { POST_QUERY_KEYS } from "@/entities/post";
 
-export default function BoardPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+import { BoardContainer, HeaderContainer } from "@/widgets/board";
 
-  useEffect(() => {
-    if (!searchParams.has("page")) router.replace("/board/?page=1");
-  }, [searchParams, router]);
+type PageProps = {
+  searchParams: Promise<SearchParams>;
+};
 
-  return null;
+export default async function page({ searchParams }: PageProps) {
+  const params = await searchParams;
+
+  const qc = new QueryClient();
+
+  await qc.prefetchQuery({
+    queryKey: POST_QUERY_KEYS.all,
+    queryFn: async () => await boardApi.fetchBoardList(params)
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(qc)}>
+      <HeaderContainer />
+      <BoardContainer params={params} />
+    </HydrationBoundary>
+  );
 }

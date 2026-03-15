@@ -19,8 +19,8 @@ type AlertModalProps = {
   open: boolean;
   onOpenChange: Dispatch<SetStateAction<boolean>>;
   action: () => void;
-  title: string | React.ReactNode;
-  description: string | React.ReactNode;
+  title: string;
+  description: string;
   descriptionSrOnly?: boolean;
   actionLabel: string;
   cancelLabel?: string;
@@ -41,19 +41,16 @@ export function AlertModal({
       open={open}
       onOpenChange={onOpenChange}
     >
-      <AlertDialogContent
-        className="flex flex-col overflow-hidden rounded-2xl border-none bg-white p-0!"
-      >
-        <AlertDialogHeader className="space-y-2 px-20 py-8 text-center! *:mx-auto">
-          <AlertDialogTitle className="text-2xl">{title}</AlertDialogTitle>
-          <AlertDialogDescription className={cn("text-gray-500", descriptionSrOnly && "sr-only")}>
+      <AlertDialogContent className="rounded-2xl bg-white">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-xl font-bold">{title}</AlertDialogTitle>
+          <AlertDialogDescription
+            className={cn("text-base", "font-medium", descriptionSrOnly && "sr-only")}
+          >
             {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
-
-        <AlertDialogFooter
-          className="h-20 gap-0 border-t border-gray-300 *:flex-1 *:hover:text-violet-600"
-        >
+        <AlertDialogFooter>
           <AlertDialogAction asChild>
             <AlertModalButton
               onOpenChange={onOpenChange}
@@ -82,8 +79,8 @@ type AlertModalButtonProps = {
 function AlertModalButton({ label, onOpenChange, action }: AlertModalButtonProps) {
   return (
     <Button
-      className="rounded-none border-none text-xl font-semibold"
-      variant="ghost"
+      className="px-6 py-2"
+      variant={action ? "default" : "ghost"}
       onClick={() => {
         if (action) action();
 

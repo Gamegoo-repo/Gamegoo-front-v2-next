@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useState } from "react";
 
 const createQueryClient = () =>
   new QueryClient({
@@ -17,18 +18,18 @@ const createQueryClient = () =>
         retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
         staleTime: 1000 * 60 * 10,
         gcTime: 1000 * 60 * 60,
-        enabled: true,
+        enabled: true
       },
       mutations: {
         onError: (error) => {
           console.error("뮤테이션 오류:", error);
-        },
-      },
-    },
+        }
+      }
+    }
   });
 
 export function ReactQueryProvider({ children }: { children: React.ReactNode }) {
-  const client = createQueryClient();
+  const [client] = useState(() => createQueryClient());
 
   return (
     <QueryClientProvider client={client}>

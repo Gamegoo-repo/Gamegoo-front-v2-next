@@ -2,8 +2,9 @@ import createClient from "openapi-fetch";
 import type { Middleware } from "openapi-fetch";
 
 import { useAuthStore } from "@/features/auth";
-import type { paths } from "./schema";
+
 import { runRefreshOnce } from "./runRefreshOnce";
+import type { paths } from "./schema";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 if (!API_BASE_URL) {
@@ -28,7 +29,7 @@ const authMiddleware: Middleware = {
 
     request.headers.set("Authorization", `Bearer ${accessToken}`);
     return request;
-  },
+  }
 };
 
 /**
@@ -77,7 +78,7 @@ const refreshMiddleware: Middleware = {
     retryRequest.headers.set(RETRY_HEADER_KEY, String(retryCount + 1));
 
     return fetch(retryRequest, { credentials: "include" });
-  },
+  }
 };
 
 /**

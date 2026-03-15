@@ -1,5 +1,7 @@
 import { FC, SVGProps } from "react";
 
+import { InnerBox } from "@/shared/ui/board-detail-modal";
+
 type WantPositionProps = {
   FirstWantPositionIcon: FC<SVGProps<SVGElement>>;
   SecondWantPositionIcon: FC<SVGProps<SVGElement>>;
@@ -7,16 +9,13 @@ type WantPositionProps = {
 
 export function WantPosition({ FirstWantPositionIcon, SecondWantPositionIcon }: WantPositionProps) {
   return (
-    <div
-      className="flex flex-col items-center justify-center rounded-xl border border-gray-300
-bg-white py-4"
-    >
+    <InnerBox className="flex flex-col">
       <h4>내가 찾는 포지션</h4>
 
-      <div className="flex *:size-12">
+      <div className="flex gap-2 *:size-10">
         <FirstWantPositionIcon />
         {SecondWantPositionIcon && <SecondWantPositionIcon />}
       </div>
-    </div>
+    </InnerBox>
   );
 }

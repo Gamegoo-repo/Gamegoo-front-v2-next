@@ -1,4 +1,4 @@
-import type { RequestPostLists } from "../model/types/request/post.request.type";
+import { RequestPostLists } from "@/entities/post";
 
 export const POST_END_POINTS = {
   postList: (params: RequestPostLists) => {
@@ -12,10 +12,10 @@ export const POST_END_POINTS = {
             tier: params.tier,
             mainP: params.mainP,
             subP: params.subP,
-            mike: params.mike,
-          },
-        },
-      },
+            mike: params.mike
+          }
+        }
+      }
     ] as const;
-  },
+  }
 } as const;

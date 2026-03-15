@@ -1,7 +1,5 @@
+import { InnerBox } from "@/shared/ui/board-detail-modal";
+
 export function Comments({ comments }: { comments: string }) {
-  return (
-    <div className="regular-18 rounded-xl border border-gray-300 bg-white px-4 py-2">
-      {comments}
-    </div>
-  );
+  return <InnerBox className="justify-start py-2">{comments}</InnerBox>;
 }

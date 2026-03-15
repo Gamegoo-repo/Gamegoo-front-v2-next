@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { cn } from "@/shared/libs/cn";
 import { Button } from "@/shared/ui/button";
 
-import type { PostForm } from "@/features/board";
+import { PostForm } from "@/entities/board";
 
 export function MicSwitch() {
   const { watch, setValue } = useFormContext<PostForm>();

@@ -5,7 +5,7 @@ export function WinRate({ winRate }: { winRate: number }) {
   return (
     <Progress
       className={cn(
-        "h-3 bg-gray-400 [&>div]:bg-gray-800",
+        "h-3 border border-gray-300 bg-white [&>div]:bg-gray-800",
         winRate < 50 && "[&>div]:bg-gray-700",
         winRate >= 50 && winRate < 70 && "[&>div]:bg-violet-600",
         winRate >= 70 && "[&>div]:bg-[#CB1FCF]"

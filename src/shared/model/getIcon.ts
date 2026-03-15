@@ -1,6 +1,6 @@
 import { POSITION_ICONS, TIER_ICONS } from "@/shared/constants";
 
-import { Position, Tier } from "@/features/board";
+import { Position, Tier } from "@/entities/post";
 
 export const getPositionIcon = (position: Position) =>
   POSITION_ICONS[position as keyof typeof POSITION_ICONS];

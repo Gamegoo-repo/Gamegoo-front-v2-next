@@ -9,5 +9,6 @@ export { useExitChatMutation } from "./model/hooks/queries/useExitChatMutation";
 export { useChatListQuery } from "./model/hooks/queries/useChatListQuery";
 export { useStartChatMutation } from "./model/hooks/queries/useStartChatMutation";
 export { useChatHistoryQuery } from "./model/hooks/queries/useChatHistoryQuery";
+export { useEnterChatFromBoardMutation } from "./model/hooks/queries/useEnterChatFromBoardMutation";
 
 export { useChatStore } from "./model/store/chat.store";

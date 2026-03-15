@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { revalidateCacheTag } from "@/shared/api";
 import { clientSideOpenapiClient } from "@/shared/api/clientSideOpenapiClient";
+import { CACHE_KEYS } from "@/shared/constants";
 import { toastMessage } from "@/shared/model";
 
-import { POST_QUERYKEYS } from "@/entities/post";
+import { POST_QUERY_KEYS } from "@/entities/post";
 
 import { useAuthStore } from "@/features/auth";
 
@@ -20,13 +22,17 @@ export const useBumpMutation = ({ loginRequired }: { loginRequired: () => void }
 
       if (error) throw new Error("BUMP_FAILED");
     },
-    onSuccess: () => {
+
+    onSuccess: async () => {
+      await revalidateCacheTag(CACHE_KEYS.board.all);
+
       queryClient.invalidateQueries({
-        queryKey: POST_QUERYKEYS.PostList
+        queryKey: POST_QUERY_KEYS.all
       });
 
       toastMessage.success("게시글을 끌어올렸습니다.");
     },
+
     onError: (err: Error) => {
       if (err.message === "LOGIN_REQUIRED") {
         loginRequired();

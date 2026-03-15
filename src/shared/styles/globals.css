@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -47,18 +48,38 @@
   --color-green-500: #69d180;
   --color-green-600: #41bf5d;
   --color-green-900: #165524;
-}
 
-@font-face {
-  font-family: "Pretendard";
-  src: url("/fonts/PretendardVariable.woff2") format("woff2");
-  font-weight: 100 900;
-}
+  --font-family-pretendard:
+    "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
 
-@layer base {
-  body {
-    @apply font-[Pretendard] text-gray-800;
-  }
+  --leading-normal: 150%;
+
+  --regular-9: 400 0.563rem/var(--leading-normal) var(--font-family-pretendard);
+  --regular-11: 400 0.688rem/var(--leading-normal) var(--font-family-pretendard);
+  --regular-13: 400 0.813rem/var(--leading-normal) var(--font-family-pretendard);
+  --regular-14: 400 0.875rem/var(--leading-normal) var(--font-family-pretendard);
+  --regular-18: 400 1.125rem/var(--leading-normal) var(--font-family-pretendard);
+  --regular-20: 400 1.25rem/var(--leading-normal) var(--font-family-pretendard);
+  --regular-25: 400 1.563rem/var(--leading-normal) var(--font-family-pretendard);
+  --regular-32: 400 2rem/var(--leading-normal) var(--font-family-pretendard);
+
+  --medium-11: 500 0.688rem/var(--leading-normal) var(--font-family-pretendard);
+  --medium-14: 500 0.875rem/var(--leading-normal) var(--font-family-pretendard);
+  --medium-16: 500 1rem/var(--leading-normal) var(--font-family-pretendard);
+
+  --semibold-13: 600 0.813rem/var(--leading-normal) var(--font-family-pretendard);
+  --semibold-14: 600 0.875rem/var(--leading-normal) var(--font-family-pretendard);
+  --semibold-16: 600 1rem/var(--leading-normal) var(--font-family-pretendard);
+  --semibold-18: 600 1.125rem/var(--leading-normal) var(--font-family-pretendard);
+
+  --bold-11: 700 0.688rem/var(--leading-normal) var(--font-family-pretendard);
+  --bold-12: 700 0.75rem/var(--leading-normal) var(--font-family-pretendard);
+  --bold-14: 700 0.875rem/var(--leading-normal) var(--font-family-pretendard);
+  --bold-16: 700 1rem/var(--leading-normal) var(--font-family-pretendard);
+  --bold-18: 700 1.125rem/var(--leading-normal) var(--font-family-pretendard);
+  --bold-20: 700 1.25rem/var(--leading-normal) var(--font-family-pretendard);
+  --bold-25: 700 1.563rem/var(--leading-normal) var(--font-family-pretendard);
+  --bold-32: 700 2rem/var(--leading-normal) var(--font-family-pretendard);
 }
 
 @layer utilities {
@@ -273,14 +294,36 @@
   }
 
   .a11y-focus-visible {
-    @apply relative focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-violet-600 focus-visible:ring-offset-2;
+    @apply relative transition-all focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-violet-600 focus-visible:ring-offset-2;
   }
 
   .a11y-focus-visible-bg {
-    @apply focus-visible:bg-violet-600 focus-visible:text-white;
+    @apply transition-all focus-visible:bg-violet-600 focus-visible:text-white;
   }
 
   .a11y-focus-within {
-    @apply focus-within:ring-2 focus-within:ring-violet-600 focus-within:ring-offset-2;
+    @apply transition-all focus-within:ring-2 focus-within:ring-violet-600 focus-within:ring-offset-2;
+  }
+
+  .a11y-focus-within-bg {
+    @apply transition-all focus-within:bg-violet-600 focus-within:text-white;
+  }
+
+  .modal-content-container {
+    @apply space-y-1;
+  }
+
+  /* semibold-14 */
+  .modal-content-label {
+    font-family: Pretendard;
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 150%;
+    @apply pl-1;
+  }
+
+  .modal-content-box {
+    @apply rounded-xl border border-gray-300 bg-white p-4;
   }
 }

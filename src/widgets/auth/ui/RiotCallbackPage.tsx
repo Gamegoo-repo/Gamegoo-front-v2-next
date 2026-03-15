@@ -26,9 +26,9 @@ export function RiotCallbackPage() {
     setAuthStatus("authenticated");
 
     // http-only cookie에 refreshToken이 저장되면 / 라우트로 이동
-    fetch("/api/auth/store-refresh-token", {
+    fetch("/api/auth/store-tokens", {
       method: "POST",
-      body: JSON.stringify({ refreshToken })
+      body: JSON.stringify({ refreshToken, accessToken })
     }).finally(() => router.replace("/"));
   }, [router, searchParams, setAccessToken]);
 

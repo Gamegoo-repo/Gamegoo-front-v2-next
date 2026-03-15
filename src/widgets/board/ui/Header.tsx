@@ -1,7 +1,7 @@
 import { GAME_MODE, TIERS, VOICE } from "@/shared/constants";
 import { DropdownType1RequiredQueryString } from "@/shared/ui/dropdown";
 
-import { Bump, PositionSelectButton, Post, RefetchButton } from "@/features/board";
+import { Bump, PositionSelectButton, PostContainer, RefetchButton } from "@/features/board";
 
 export function Header({ refetch }: { refetch: () => void }) {
   return (
@@ -31,7 +31,7 @@ export function Header({ refetch }: { refetch: () => void }) {
         <div className="flex items-center gap-[24px]">
           <Bump />
 
-          <Post />
+          <PostContainer />
         </div>
       </div>
     </div>

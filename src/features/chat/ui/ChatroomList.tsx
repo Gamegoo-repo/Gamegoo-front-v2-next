@@ -16,27 +16,8 @@ export function ChatroomList({ chatList }: { chatList: ChatList }) {
             imgNum={v.targetMemberImg}
             label={v.lastMsg ?? ""}
             lastMsgAt={v.lastMsgAt}
-          >
-            <></>
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button>
-                  <EllipsisVertical className="size-5!" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="border border-gray-200 bg-white p-0"
-                align="end"
-              >
-                <DropdownMenuItem
-                  className="cursor-pointer hover:bg-gray-200"
-                  onClick={() => exitChat.mutate({ chatroomUuid: v.uuid })}
-                >
-                  채팅방 나가기
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
-          </Friend>
+            unReadMessageCount={v.notReadMsgCnt}
+          />
         );
       })}
 

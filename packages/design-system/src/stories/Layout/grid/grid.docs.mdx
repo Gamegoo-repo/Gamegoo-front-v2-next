@@ -1,0 +1,134 @@
+import { Meta, Canvas, Controls } from "@storybook/blocks";
+import * as GridStories from "./grid.stories";
+import { FeatureTable } from "../../../docs/FeatureTable";
+
+<Meta of={GridStories} />
+
+# Grid
+
+## Features
+
+<FeatureTable
+  basics={["자식 요소 그리드 배치", "Grid 컨테이너"]}
+  additionals={[
+    "컬럼 수 설정",
+    "간격 설정 (gap · rowGap · columnGap)",
+    "반응형 자동 컬럼 (responsive · minWidth)",
+    "전체 너비 (fullWidth)",
+    "HTML 태그 변경 (as)",
+    "GridItem — 컬럼 병합 (colSpan)",
+    "GridItem — 행 병합 (rowSpan)",
+  ]}
+/>
+
+<br />
+
+## Props
+
+### Grid
+
+```ts
+export type GridColumns = number;
+export type GridGap = keyof DefaultTheme["spacing"] | number | string | "none";
+export type GridMinWidth = keyof DefaultTheme["spacing"] | number | string;
+
+export interface GridProps {
+  as?: ElementType;
+  children?: ReactNode;
+  columns?: GridColumns; // default: 3
+  gap?: GridGap; // default: "none"
+  rowGap?: GridGap;
+  columnGap?: GridGap;
+  responsive?: boolean; // default: false
+  minWidth?: GridMinWidth; // default: 200
+  fullWidth?: boolean; // default: false
+}
+```
+
+### GridItem
+
+```ts
+export interface GridItemProps {
+  as?: ElementType;
+  children?: ReactNode;
+  colSpan?: number;
+  rowSpan?: number;
+}
+```
+
+<Controls of={GridStories.Default} />
+
+## Default
+
+<Canvas of={GridStories.Default} />
+
+```tsx
+<Grid columns={3} gap={16}>
+  <Box />
+  <Box />
+  <Box />
+  <Box />
+  <Box />
+  <Box />
+</Grid>
+```
+
+## Responsive
+
+반응형 모드에서는 `minWidth`를 기준으로 컬럼 수가 자동으로 조정됩니다.
+
+<Canvas of={GridStories.Responsive} />
+
+```tsx
+<Grid responsive minWidth={200} gap={16}>
+  <Box />
+  <Box />
+  ...
+</Grid>
+```
+
+## Row / Column Gap
+
+`rowGap`과 `columnGap`을 개별로 지정할 수 있습니다.
+
+<Canvas of={GridStories.WithRowGap} />
+
+```tsx
+<Grid columns={3} rowGap={24} columnGap={8}>
+  <Box />
+  <Box />
+  ...
+</Grid>
+```
+
+## GridItem Span
+
+`GridItem`의 `colSpan`, `rowSpan`으로 셀을 병합할 수 있습니다.
+
+<Canvas of={GridStories.ItemSpan} />
+
+```tsx
+<Grid columns={4} gap={16}>
+  <GridItem colSpan={2}>
+    <Box />
+  </GridItem>
+  <GridItem>
+    <Box />
+  </GridItem>
+  <GridItem rowSpan={2}>
+    <Box height={180} />
+  </GridItem>
+</Grid>
+```
+
+## Full Width
+
+<Canvas of={GridStories.FullWidth} />
+
+```tsx
+<Grid columns={3} gap={16} fullWidth>
+  <Box />
+  <Box />
+  <Box />
+</Grid>
+```

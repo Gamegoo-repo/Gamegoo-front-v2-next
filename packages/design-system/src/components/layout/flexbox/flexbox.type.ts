@@ -1,6 +1,15 @@
 import type { HTMLAttributes, ReactNode, ElementType } from "react";
 import { DefaultTheme } from "styled-components";
 
+// Augment DefaultTheme to include 'spacing' if not already present
+declare module "styled-components" {
+  export interface DefaultTheme {
+    spacing: {
+      [key: string]: string | number;
+    };
+  }
+}
+
 export type FlexDirection = "row" | "column" | "rowReverse" | "columnReverse";
 
 export type FlexJustify =

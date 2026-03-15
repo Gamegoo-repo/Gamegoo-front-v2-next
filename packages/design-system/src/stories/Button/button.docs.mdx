@@ -1,0 +1,147 @@
+import { Meta, Canvas, Controls, Story } from "@storybook/blocks";
+import * as ButtonStories from "./Button.stories";
+import { FeatureTable } from "../../docs/FeatureTable";
+
+<Meta of={ButtonStories} />
+
+# Button
+
+## Features
+
+<FeatureTable
+  basics={["라벨", "클릭 시 동작"]}
+  additionals={[
+    "스타일 설정 (Primary · Secondary · Outline · Ghost · Danger · Black)",
+    "사이즈 설정 (Small · Medium · Large · XL · Icon)",
+    "로딩",
+    "비활성화",
+  ]}
+/>
+
+<br />
+
+## Props
+
+```tsx
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "danger"
+  | "black";
+
+export type ButtonSize = "sm" | "md" | "lg" | "xl" | "icon";
+
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  loading?: boolean;
+}
+```
+
+<Controls of={ButtonStories.Primary} />
+
+## Button Variant
+
+### 1. Primary
+
+<Canvas of={ButtonStories.Primary} />
+
+```tsx
+<Button variant="primary">Button</Button>
+```
+
+### 2. Secondary
+
+<Canvas of={ButtonStories.Secondary} />
+
+```tsx
+<Button variant="secondary">Button</Button>
+```
+
+### 3. Outline
+
+<Canvas of={ButtonStories.Outline} />
+
+```tsx
+<Button variant="outline">Button</Button>
+```
+
+### 4. Ghost
+
+<Canvas of={ButtonStories.Ghost} />
+
+```tsx
+<Button variant="ghost">Button</Button>
+```
+
+### 5. Danger
+
+<Canvas of={ButtonStories.Danger} />
+
+```tsx
+<Button variant="danger">Button</Button>
+```
+
+### 6. Black
+
+<Canvas of={ButtonStories.Black} />
+
+```tsx
+<Button variant="black">Button</Button>
+```
+
+## Button Size
+
+<Canvas of={ButtonStories.Sizes} />
+
+### 1. Small
+
+```tsx
+<Button size="sm">Button</Button>
+```
+
+### 2. Medium
+
+```tsx
+<Button size="md">Button</Button>
+```
+
+### 3. Large
+
+```tsx
+<Button size="lg">Button</Button>
+```
+
+### 4. XL
+
+```tsx
+<Button size="xl">Button</Button>
+```
+
+### 5. Icon
+
+<Canvas of={ButtonStories.Icon} />
+
+```tsx
+<Button size="icon">X</Button>
+```
+
+## Disabled
+
+<Canvas of={ButtonStories.Disabled} />
+
+```tsx
+<Button disabled>Button</Button>
+```
+
+## Loading
+
+<strong>⚠️⚠️⚠️Loading 상태에서는 버튼이 자동으로 비활성화됩니다!⚠️⚠️⚠️</strong>
+
+<Canvas of={ButtonStories.Loading} />
+
+```tsx
+<Button loading>Button</Button>
+```

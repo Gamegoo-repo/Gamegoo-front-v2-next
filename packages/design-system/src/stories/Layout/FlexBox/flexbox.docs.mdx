@@ -1,0 +1,154 @@
+import { Meta, Canvas, Controls } from "@storybook/blocks";
+import * as FlexBoxStories from "./FlexBox.stories";
+import { FeatureTable } from "../../../docs/FeatureTable";
+
+<Meta of={FlexBoxStories} />
+
+# FlexBox
+
+## Features
+
+<FeatureTable
+  basics={["자식 요소 배치", "Flex 컨테이너"]}
+  additionals={[
+    "방향 설정 (Row · Column · RowReverse · ColumnReverse)",
+    "주축 정렬 (Start · Center · End · Between · Around · Evenly)",
+    "교차축 정렬 (Start · Center · End · Stretch · Baseline)",
+    "줄바꿈 설정 (Nowrap · Wrap · WrapReverse)",
+    "간격 설정 (theme spacing · px · none)",
+    "전체 너비 / 전체 높이",
+    "Flex Grow / Shrink",
+    "Inline Flex",
+    "HTML 태그 변경 (as)",
+  ]}
+/>
+
+<br />
+
+## Props
+
+```ts
+export type FlexDirection = "row" | "column" | "rowReverse" | "columnReverse";
+
+export type FlexJustify =
+  | "start"
+  | "center"
+  | "end"
+  | "between"
+  | "around"
+  | "evenly";
+
+export type FlexAlign = "start" | "center" | "end" | "stretch" | "baseline";
+
+export type FlexWrap = "nowrap" | "wrap" | "wrapReverse";
+
+export type FlexGap = keyof DefaultTheme["spacing"] | number | string | "none";
+
+export interface FlexBoxProps extends HTMLAttributes<HTMLElement> {
+  as?: ElementType;
+  children?: ReactNode;
+  direction?: FlexDirection;
+  justify?: FlexJustify;
+  align?: FlexAlign;
+  wrap?: FlexWrap;
+  gap?: FlexGap;
+  fullWidth?: boolean;
+  fullHeight?: boolean;
+  grow?: boolean;
+  shrink?: boolean;
+  inline?: boolean;
+}
+```
+
+<Controls of={FlexBoxStories.Default} />
+
+## Default
+
+<Canvas of={FlexBoxStories.Default} />
+
+```tsx
+<FlexBox direction="row" justify="start" align="center" gap={8}>
+  <Box />
+  <Box />
+  <Box />
+</FlexBox>
+```
+
+## Direction
+
+### Column
+
+<Canvas of={FlexBoxStories.Column} />
+
+```tsx
+<FlexBox direction="column" gap={8}>
+  <Box />
+  <Box />
+  <Box />
+</FlexBox>
+```
+
+## Justify
+
+### Between
+
+<Canvas of={FlexBoxStories.JustifyBetween} />
+
+```tsx
+<FlexBox justify="between" align="center" gap={8} fullWidth>
+  <Box />
+  <Box />
+  <Box />
+</FlexBox>
+```
+
+## Align
+
+### Center
+
+<Canvas of={FlexBoxStories.AlignCenter} />
+
+```tsx
+<FlexBox align="center" gap={8}>
+  <Box />
+  <Box />
+  <Box />
+</FlexBox>
+```
+
+## Wrap
+
+<Canvas of={FlexBoxStories.Wrap} />
+
+```tsx
+<FlexBox wrap="wrap" gap={8}>
+  <Box />
+  <Box />
+  <Box />
+  <Box />
+  <Box />
+</FlexBox>
+```
+
+## Inline
+
+<Canvas of={FlexBoxStories.Inline} />
+
+```tsx
+<FlexBox inline gap={8}>
+  <Box />
+  <Box />
+</FlexBox>
+```
+
+## Custom Gap
+
+<Canvas of={FlexBoxStories.CustomGap} />
+
+```tsx
+<FlexBox gap="24px">
+  <Box />
+  <Box />
+  <Box />
+</FlexBox>
+```

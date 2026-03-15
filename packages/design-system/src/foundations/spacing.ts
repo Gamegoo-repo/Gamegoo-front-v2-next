@@ -15,3 +15,4 @@ export const spacing = {
   48: "48px",
   60: "60px",
 } as const;
+export type SpacingKey = keyof typeof spacing;

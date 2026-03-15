@@ -1,0 +1,191 @@
+import { Meta, Canvas, Controls } from "@storybook/blocks";
+import * as TableStories from "./table.stories";
+import { FeatureTable } from "../../docs/FeatureTable";
+
+<Meta of={TableStories} />
+
+# Table
+
+## Features
+
+<FeatureTable
+  basics={["데이터 목록 표시", "헤더 / 바디 구조"]}
+  additionals={[
+    "Primitive 방식 — TableHead · TableBody · TableRow · TableHeadCell · TableCell 조합",
+    "DataTable 방식 — columns 정의만으로 렌더링",
+    "로딩 스켈레톤 (skeletonRowCount)",
+    "빈 데이터 안내 메시지 (emptyText)",
+    "행 클릭 이벤트 (onRowClick)",
+    "행 선택 상태 (selected)",
+    "사이즈 설정 (sm · md · lg)",
+    "셀 정렬 (left · center · right)",
+    "컬럼 너비 설정 (width)",
+    "커스텀 로딩 행 (renderLoadingRow)",
+    "행 스타일 / 클래스 커스터마이징 (rowClassName · getRowStyle)",
+    "전체 너비 (fullWidth)",
+    "테이블 레이아웃 (fixed · auto)",
+  ]}
+/>
+
+<br />
+
+## Props
+
+### DataTable
+
+```ts
+export interface DataTableColumn<T> {
+  key: string;
+  header: ReactNode;
+  width?: number | string;
+  align?: "left" | "center" | "right";
+  render: (row: T, rowIndex: number) => ReactNode;
+}
+
+export interface DataTableProps<T> {
+  data?: T[];
+  columns: DataTableColumn<T>[];
+  ariaLabel: string;
+  loading?: boolean; // default: false
+  emptyText?: ReactNode; // default: "데이터가 없습니다."
+  rowKey?: keyof T | ((row: T, index: number) => string | number);
+  onRowClick?: (row: T, rowIndex: number) => void;
+  rowClassName?: (row: T, rowIndex: number) => string | undefined;
+  getRowStyle?: (row: T, rowIndex: number) => CSSProperties | undefined;
+  tableLayout?: "fixed" | "auto"; // default: "fixed"
+  size?: "sm" | "md" | "lg"; // default: "md"
+  fullWidth?: boolean; // default: true
+  skeletonRowCount?: number; // default: 8
+  renderLoadingRow?: (rowIndex: number, columnLength: number) => ReactNode;
+}
+```
+
+### Primitive
+
+```ts
+// TableHeadCell
+export interface TableHeadCellProps {
+  width?: number | string;
+  align?: "left" | "center" | "right";
+}
+
+// TableCell
+export interface TableCellProps {
+  width?: number | string;
+  align?: "left" | "center" | "right";
+}
+
+// TableRow
+export interface TableRowProps {
+  clickable?: boolean;
+  selected?: boolean;
+}
+
+// Table
+export interface TableRootProps {
+  size?: "sm" | "md" | "lg"; // default: "md"
+  fullWidth?: boolean; // default: true
+}
+```
+
+<Controls of={TableStories.Default} />
+
+## Primitive
+
+직접 `TableHead`, `TableBody`, `TableRow`, `TableHeadCell`, `TableCell`을 조합해서 사용하는 방식입니다.
+
+<Canvas of={TableStories.Primitive} />
+
+```tsx
+<Table aria-label="게시글 목록">
+  <TableHead>
+    <tr>
+      <TableHeadCell width={80}>번호</TableHeadCell>
+      <TableHeadCell>제목</TableHeadCell>
+      <TableHeadCell width={120}>작성자</TableHeadCell>
+    </tr>
+  </TableHead>
+
+  <TableBody>
+    <TableRow>
+      <TableCell>1</TableCell>
+      <TableCell>기본 Primitive 테이블 예시</TableCell>
+      <TableCell>광열</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## DataTable
+
+`columns` 배열만 정의하면 헤더와 바디를 자동으로 렌더링합니다.
+
+<Canvas of={TableStories.Default} />
+
+```tsx
+<DataTable
+  ariaLabel="게시판 목록"
+  data={data}
+  rowKey="id"
+  columns={[
+    {
+      key: "title",
+      header: "제목",
+      render: (row) => row.title,
+    },
+    {
+      key: "author",
+      header: "작성자",
+      width: 140,
+      align: "center",
+      render: (row) => row.author,
+    },
+  ]}
+/>
+```
+
+## Loading
+
+`loading` prop을 전달하면 스켈레톤 행을 렌더링합니다. `skeletonRowCount`로 행 수를 조정할 수 있습니다.
+
+<Canvas of={TableStories.Loading} />
+
+```tsx
+<DataTable
+  ariaLabel="게시판 목록"
+  loading
+  skeletonRowCount={5}
+  columns={columns}
+/>
+```
+
+## Empty
+
+`data`가 빈 배열이면 `emptyText`를 표시합니다.
+
+<Canvas of={TableStories.Empty} />
+
+```tsx
+<DataTable
+  ariaLabel="게시판 목록"
+  data={[]}
+  emptyText="게시된 글이 없습니다."
+  columns={columns}
+/>
+```
+
+## Clickable Rows
+
+`onRowClick`을 전달하면 행에 hover 스타일과 클릭 이벤트가 활성화됩니다.
+
+<Canvas of={TableStories.ClickableRows} />
+
+```tsx
+<DataTable
+  ariaLabel="게시판 목록"
+  data={data}
+  rowKey="id"
+  onRowClick={(row) => console.log(row)}
+  columns={columns}
+/>
+```

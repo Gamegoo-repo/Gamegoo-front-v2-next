@@ -43,3 +43,4 @@ export const colors = {
   black: "#000000",
   transparent: "transparent",
 } as const;
+export type Colors = typeof colors;

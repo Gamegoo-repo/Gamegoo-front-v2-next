@@ -1,0 +1,159 @@
+import { Meta, Canvas, Controls } from "@storybook/blocks";
+import * as ContainerStories from "./container.stories";
+import { FeatureTable } from "../../../docs/FeatureTable";
+
+<Meta of={ContainerStories} />
+
+# Container
+
+## Features
+
+<FeatureTable
+  basics={["콘텐츠 최대 너비 제한", "좌우 자동 중앙 정렬"]}
+  additionals={[
+    "사이즈 설정 (sm · md · lg · xl · 2xl · full · 커스텀)",
+    "패딩 설정 (theme spacing · px · 커스텀)",
+    "콘텐츠 수직 중앙 정렬 (centered)",
+    "전체 너비 (fullWidth)",
+    "HTML 태그 변경 (as)",
+  ]}
+/>
+
+<br />
+
+## Props
+
+```ts
+export type ContainerSize =
+  | "sm" // 640px
+  | "md" // 768px
+  | "lg" // 1024px
+  | "xl" // 1280px
+  | "2xl" // 1536px
+  | "full" // 100%
+  | number
+  | string;
+
+export type ContainerPadding =
+  | keyof DefaultTheme["spacing"]
+  | number
+  | string
+  | "none";
+
+export interface ContainerProps {
+  as?: ElementType;
+  children?: ReactNode;
+  size?: ContainerSize; // default: "xl"
+  padding?: ContainerPadding; // default: 16
+  centered?: boolean; // default: false
+  fullWidth?: boolean; // default: false
+}
+```
+
+<Controls of={ContainerStories.Default} />
+
+## Default
+
+<Canvas of={ContainerStories.Default} />
+
+```tsx
+<Container size="xl" padding={16}>
+  ...
+</Container>
+```
+
+## Size
+
+### Small (640px)
+
+<Canvas of={ContainerStories.Small} />
+
+```tsx
+<Container size="sm" padding={16}>
+  ...
+</Container>
+```
+
+### Medium (768px)
+
+<Canvas of={ContainerStories.Medium} />
+
+```tsx
+<Container size="md" padding={16}>
+  ...
+</Container>
+```
+
+### Large (1024px)
+
+<Canvas of={ContainerStories.Large} />
+
+```tsx
+<Container size="lg" padding={16}>
+  ...
+</Container>
+```
+
+### XL (1280px)
+
+<Canvas of={ContainerStories.XL} />
+
+```tsx
+<Container size="xl" padding={16}>
+  ...
+</Container>
+```
+
+### 2XL (1536px)
+
+<Canvas of={ContainerStories.XXL} />
+
+```tsx
+<Container size="2xl" padding={16}>
+  ...
+</Container>
+```
+
+### Full (100%)
+
+<Canvas of={ContainerStories.Full} />
+
+```tsx
+<Container size="full" padding={16}>
+  ...
+</Container>
+```
+
+## Centered
+
+자식 요소를 수직 중앙 정렬합니다.
+
+<Canvas of={ContainerStories.Centered} />
+
+```tsx
+<Container size="md" padding={16} centered>
+  ...
+</Container>
+```
+
+## Full Width
+
+`max-width` 제한을 없애고 전체 너비로 확장합니다.
+
+<Canvas of={ContainerStories.FullWidth} />
+
+```tsx
+<Container fullWidth padding={16}>
+  ...
+</Container>
+```
+
+## Custom Padding
+
+<Canvas of={ContainerStories.CustomPadding} />
+
+```tsx
+<Container size="md" padding="40px">
+  ...
+</Container>
+```

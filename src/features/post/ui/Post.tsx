@@ -33,7 +33,7 @@ export function Post({ myPostBoardId, userInfo, open, onOpenChange }: PostProps)
 
   const formId = useId();
 
-  const { data: postData } = useFetchPostQuery(myPostBoardId);
+  const { data: postData } = useFetchPostQuery(myPostBoardId!);
 
   const methods = useForm<PostForm>({
     mode: "onChange",

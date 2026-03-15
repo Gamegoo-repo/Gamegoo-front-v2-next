@@ -15,7 +15,7 @@ type FriendProps = {
   tag?: string;
   lastMsgAt?: string;
   type: ViewType;
-  unReadMessageCount: number;
+  unReadMessageCount?: number;
 };
 
 export function Friend({
@@ -58,7 +58,7 @@ outline-none hover:bg-gray-200"
 
           <p className="flex flex-1 items-center justify-between text-sm text-gray-500">
             <span>{label}</span>
-            {unReadMessageCount > 0 && (
+            {unReadMessageCount && unReadMessageCount > 0 && (
               <span
                 className="flex size-5 items-center justify-center rounded-full bg-violet-600
 text-xs text-white"

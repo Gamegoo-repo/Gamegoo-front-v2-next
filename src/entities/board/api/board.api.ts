@@ -7,6 +7,8 @@ import { PostData } from "@/entities/post";
 
 export const boardApi = {
   fetchBoardList: async (params: SearchParams): Promise<PostData> => {
+    const isServer = typeof window === "undefined";
+
     const { data, error } = await openapiClient.GET("/api/v2/posts/list", {
       params: {
         query: {
@@ -16,10 +18,8 @@ export const boardApi = {
           mike: params.voice
         }
       },
-      cache: "force-cache",
-      next: {
-        tags: [CACHE_KEYS.board.all]
-      }
+      cache: isServer ? "force-cache" : "no-store",
+      next: isServer ? { tags: [CACHE_KEYS.board.all] } : undefined
     });
 
     if (error) throw error;

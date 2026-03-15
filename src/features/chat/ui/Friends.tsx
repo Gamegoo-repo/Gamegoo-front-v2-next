@@ -85,7 +85,7 @@ function FriendListMap({ friendList, label }: FriendListMapProps) {
               imgNum={v.profileImg}
               label={`#${v.tag}`}
             >
-              <Button
+              {/* <Button
                 size="icon-sm"
                 variant="ghost"
                 onClick={(e) => {
@@ -102,7 +102,7 @@ function FriendListMap({ friendList, label }: FriendListMapProps) {
                 <Star
                   className={cn("stroke-[1.5] text-violet-600", v.liked && "fill-violet-300")}
                 />
-              </Button>
+              </Button> */}
             </Friend>
           );
         })}

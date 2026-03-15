@@ -7,12 +7,12 @@ export const postApi = {
     const { data, error } = await openapiClient.GET("/api/v2/posts/list/{boardId}", {
       params: {
         path: {
-          boardId: Number(boardId)
+          boardId
         }
       },
       cache: "force-cache",
       next: {
-        tags: [CACHE_KEYS.board.all, CACHE_KEYS.board.detail(boardId)]
+        tags: [CACHE_KEYS.board.detail(boardId)]
       }
     });
 

@@ -1,5 +1,4 @@
 export { useDeletePostMutation } from "./model/hooks/queries/useDeletePostMutation";
-export { useFetchPostDetailSuspenseQuery } from "./model/hooks/queries/useFetchPostDetailSuspenseQuery";
 export { useEditPostMutation } from "./model/hooks/queries/useEditPostMutation";
 export { usePostMutation } from "./model/hooks/queries/usePostMutation";
 export { useFetchBoardListQuery } from "./model/hooks/queries/useFetchBoardListQuery";

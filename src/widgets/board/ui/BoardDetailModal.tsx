@@ -1,6 +1,5 @@
 "use client";
 
-import { useModalStore } from "@/shared/store";
 import { DialogModal } from "@/shared/ui/dialog";
 
 import {
@@ -19,7 +18,7 @@ import {
   WinRateSection,
   useFetchMannerDataQuery
 } from "@/features/board";
-import { useFetchPostDetailSuspenseQuery } from "@/features/post";
+import { useFetchPostQuery } from "@/features/post";
 import { useFetchMyProfileQuery, useFetchOtherProfileQuery } from "@/features/profile";
 
 type BoardDetailModalProps = {
@@ -28,7 +27,9 @@ type BoardDetailModalProps = {
 };
 
 export function BoardDetailModal({ boardId, fromExternal }: BoardDetailModalProps) {
-  const { data: boardData } = useFetchPostDetailSuspenseQuery(boardId);
+  const { data } = useFetchPostQuery(boardId);
+  const boardData = data!;
+
   const { data: myProfile } = useFetchMyProfileQuery();
   const { data: otherProfile } = useFetchOtherProfileQuery(boardData.memberId!, myProfile?.id);
   const { data: mannerData } = useFetchMannerDataQuery(boardData.memberId!);

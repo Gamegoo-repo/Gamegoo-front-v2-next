@@ -1,23 +1,22 @@
-"use client";
-
 import { useQuery } from "@tanstack/react-query";
 
-import { clientSideOpenapiClient } from "@/shared/api/clientSideOpenapiClient";
+import { openapiClient } from "@/shared/api/openapiClient";
 import { ERROR_MESSAGES } from "@/shared/constants";
 
 import { PostDetail } from "@/entities/post";
 import { POST_QUERY_KEYS } from "@/entities/post";
 
-export const useFetchPostQuery = (boardId: number | undefined) => {
+export const useFetchPostQuery = (boardId: number) => {
   return useQuery<PostDetail>({
-    queryKey: boardId ? POST_QUERY_KEYS.detail(boardId) : [...POST_QUERY_KEYS.all, "post"],
+    queryKey: POST_QUERY_KEYS.detail(boardId),
     queryFn: async () => {
-      const { data, error } = await clientSideOpenapiClient.GET("/api/v2/posts/list/{boardId}", {
+      const { data, error } = await openapiClient.GET("/api/v2/posts/list/{boardId}", {
         params: {
           path: {
-            boardId: Number(boardId)
+            boardId
           }
-        }
+        },
+        cache: "no-store"
       });
 
       if (error) throw error;

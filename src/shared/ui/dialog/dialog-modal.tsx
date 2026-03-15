@@ -7,7 +7,6 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { cn } from "@/shared/libs/cn";
 import { normalizeSearchParam } from "@/shared/libs/normalizeSearchParam";
 import { toastMessage } from "@/shared/model";
-import { useModalStore } from "@/shared/store";
 import { AlertModal } from "@/shared/ui/alert-dialog";
 import { Button } from "@/shared/ui/button";
 import {

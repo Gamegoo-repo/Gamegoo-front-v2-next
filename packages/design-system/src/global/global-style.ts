@@ -29,7 +29,4 @@ export const GlobalStyle = createGlobalStyle`
     outline: none;
     box-shadow: none;
   }
-  
-
-
 `;

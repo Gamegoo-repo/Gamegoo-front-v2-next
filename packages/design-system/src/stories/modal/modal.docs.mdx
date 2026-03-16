@@ -1,0 +1,169 @@
+import { Meta, Canvas, Controls } from "@storybook/blocks";
+import * as ModalStories from "./modal.stories";
+import { FeatureTable } from "../../docs/FeatureTable";
+
+<Meta of={ModalStories} />
+
+# Modal
+
+## Features
+
+<FeatureTable
+  basics={["콘텐츠 오버레이 표시", "백드롭 클릭 / ESC 닫기"]}
+  additionals={[
+    "패딩 크기 설정 (none · sm · md · lg)",
+    "우측 상단 닫기 버튼 (hasCloseButton)",
+    "백드롭 클릭 닫기 비활성화 (backdropClosable)",
+    "ESC 닫기 비활성화 (escClosable)",
+    "스크롤 잠금 (열림 시 body 고정)",
+    "Portal 렌더링 (modal-root)",
+    "forwardRef 지원",
+  ]}
+/>
+
+<br />
+
+## Props
+
+```ts
+export type ModalPadding = "none" | "sm" | "md" | "lg";
+
+export interface ModalProps {
+  /** 모달 열림 여부 */
+  isOpen: boolean;
+
+  /** 모달 닫기 핸들러 */
+  onClose: () => void;
+
+  /** 모달 내부 콘텐츠 */
+  children: ReactNode;
+
+  /** 모달 컨테이너에 추가할 className (width 제어 등) */
+  className?: string;
+
+  /**
+   * 내부 패딩 크기
+   * - "none" : 0px
+   * - "sm"   : 16px 20px
+   * - "md"   : 24px 20px / 768px↑ 32px  (default)
+   * - "lg"   : 32px
+   */
+  padding?: ModalPadding;
+
+  /**
+   * 백드롭 클릭 시 닫기
+   * @default true
+   */
+  backdropClosable?: boolean;
+
+  /**
+   * ESC 키 입력 시 닫기
+   * @default true
+   */
+  escClosable?: boolean;
+
+  /**
+   * 우측 상단 닫기 버튼 표시
+   * @default false
+   */
+  hasCloseButton?: boolean;
+}
+```
+
+<Controls of={ModalStories.UserProfileMenu} />
+
+## 유저 프로필 메뉴
+
+헤더 프로필 클릭 시 나타나는 메뉴 모달입니다. `padding="none"`으로 내부 레이아웃을 직접 제어합니다.
+
+<Canvas of={ModalStories.UserProfileMenu} />
+
+```tsx
+<Modal
+  isOpen={open}
+  onClose={() => setOpen(false)}
+  padding="none"
+  className="w-[420px]"
+>
+  {/* 커스텀 콘텐츠 */}
+</Modal>
+```
+
+## 알림 읽음 확인
+
+선택한 알림을 읽음 처리할 때 표시되는 확인 모달입니다.
+
+<Canvas of={ModalStories.NotificationReadConfirm} />
+
+```tsx
+<Modal
+  isOpen={open}
+  onClose={onClose}
+  padding="none"
+  className="w-[320px] md:w-[540px]"
+>
+  <FlexBox direction="column" align="center" fullHeight>
+    <FlexBox
+      align="center"
+      justify="center"
+      fullHeight
+      style={{ flex: 1, padding: 24 }}
+    >
+      <span>선택한 알림을 읽음 처리할까요?</span>
+    </FlexBox>
+    <footer>
+      <button onClick={onClose}>취소</button>
+      <button onClick={onConfirm}>확인</button>
+    </footer>
+  </FlexBox>
+</Modal>
+```
+
+## 알림 삭제 확인
+
+선택한 알림 삭제 시 표시되는 확인 모달입니다. 삭제 불가 안내 문구가 포함됩니다.
+
+<Canvas of={ModalStories.NotificationDeleteConfirm} />
+
+```tsx
+<Modal
+  isOpen={open}
+  onClose={onClose}
+  padding="none"
+  className="w-[320px] md:w-[540px]"
+>
+  <FlexBox direction="column" align="center" fullHeight>
+    <FlexBox direction="column" align="center" justify="center" fullHeight>
+      <span>선택한 알림을 삭제할까요?</span>
+      <span>삭제된 알림은 복구할 수 없습니다.</span>
+    </FlexBox>
+    <footer>
+      <button onClick={onClose}>취소</button>
+      <button onClick={onDelete}>삭제</button>
+    </footer>
+  </FlexBox>
+</Modal>
+```
+
+## 알림 전체 흐름
+
+전체선택 체크박스 → 읽음/삭제 버튼 → 확인 모달까지의 실제 인터랙션 흐름입니다.
+
+<Canvas of={ModalStories.NotificationFull} />
+
+## 게시글 작성
+
+듀오 게시글 작성 모달입니다. `backdropClosable={false}`로 실수로 닫히는 것을 방지합니다.
+
+<Canvas of={ModalStories.PostFormModal} />
+
+```tsx
+<Modal
+  isOpen={open}
+  onClose={onClose}
+  backdropClosable={false}
+  className="w-full md:w-[555px]"
+>
+  <form>...</form>
+</Modal>
+```

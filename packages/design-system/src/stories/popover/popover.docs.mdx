@@ -1,0 +1,219 @@
+import { Meta, Canvas, Controls } from "@storybook/blocks";
+import * as PopoverStories from "./popover.stories";
+import { FeatureTable } from "../../docs/FeatureTable";
+
+<Meta of={PopoverStories} />
+
+# Popover
+
+## Features
+
+<FeatureTable
+  basics={["트리거 클릭 시 콘텐츠 표시", "외부 클릭 시 자동 닫기"]}
+  additionals={[
+    "수평 정렬 설정 (start · center · end)",
+    "방향 설정 (top · bottom)",
+    "트리거와의 간격 설정 (sideOffset)",
+    "화살표 표시 / 숨김 (showArrow)",
+    "Controlled 모드 (open · onOpenChange)",
+    "asChild — 커스텀 트리거 컴포넌트 주입",
+    "overflow:hidden 컨테이너 대응 (containerRef → body portal)",
+    "ESC / 외부 클릭 닫기",
+  ]}
+/>
+
+<br />
+
+## Props
+
+### Popover
+
+```ts
+export interface PopoverProps {
+  children: ReactNode;
+  /** 트리거 기준 수평 정렬 (default: "center") */
+  align?: "start" | "center" | "end";
+  /** 팝오버 방향 (default: "bottom") */
+  side?: "top" | "bottom";
+  /** 트리거와의 간격 px (default: 12) */
+  sideOffset?: number;
+  /** controlled open */
+  open?: boolean;
+  /** controlled onOpenChange */
+  onOpenChange?: (open: boolean) => void;
+  /**
+   * overflow:hidden 컨테이너 ref
+   * 전달 시 body portal + 좌표 계산으로 잘림 방지
+   */
+  containerRef?: RefObject<HTMLElement | null>;
+}
+```
+
+### PopoverTrigger
+
+```ts
+export interface PopoverTriggerProps {
+  children: ReactNode;
+  /** true면 children에 ref/onClick 주입 — button 래핑 없음 (default: false) */
+  asChild?: boolean;
+}
+```
+
+### PopoverContent
+
+```ts
+export interface PopoverContentProps {
+  children: ReactNode;
+  className?: string;
+  /** 화살표 표시 여부 (default: true) */
+  showArrow?: boolean;
+}
+```
+
+### PopoverHeader
+
+```ts
+export interface PopoverHeaderProps {
+  /** 헤더 타이틀 */
+  title: string;
+}
+```
+
+<Controls of={PopoverStories.Basic} />
+
+## Basic
+
+<Canvas of={PopoverStories.Basic} />
+
+```tsx
+<Popover>
+  <PopoverTrigger asChild>
+    <button>⋮</button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <PopoverHeader title="메뉴" />
+    {/* 내용 */}
+  </PopoverContent>
+</Popover>
+```
+
+## PostActionMenu
+
+실제 서비스의 게시글 액션 메뉴 패턴입니다. `align="end"` + `showArrow={false}`로 사용합니다.
+
+<Canvas of={PopoverStories.PostActionMenu} />
+
+```tsx
+<Popover align="end">
+  <PopoverTrigger asChild>
+    <button>⋮</button>
+  </PopoverTrigger>
+  <PopoverContent showArrow={false}>{/* 메뉴 항목 */}</PopoverContent>
+</Popover>
+```
+
+## PositionSelector
+
+포지션 선택 팝오버입니다. `PopoverHeader`의 ✕ 버튼 또는 외부 클릭으로 닫힙니다.
+
+<Canvas of={PopoverStories.PositionSelector} />
+
+```tsx
+<Popover align="center">
+  <PopoverTrigger asChild>
+    <button>+</button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <PopoverHeader title="포지션 선택" />
+    {/* 포지션 그리드 */}
+  </PopoverContent>
+</Popover>
+```
+
+## GameStylePopover
+
+최대 3개 선택 게임 스타일 팝오버입니다. `align="start"`로 트리거 왼쪽 기준 정렬합니다.
+
+<Canvas of={PopoverStories.GameStylePopover} />
+
+```tsx
+<Popover align="start">
+  <PopoverTrigger asChild>
+    <button>+</button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <PopoverHeader title="게임 스타일" />
+    {/* 스타일 칩 목록 */}
+  </PopoverContent>
+</Popover>
+```
+
+## Controlled
+
+`open` / `onOpenChange` prop으로 외부에서 열림 상태를 제어합니다.
+
+<Canvas of={PopoverStories.Controlled} />
+
+```tsx
+const [open, setOpen] = useState(false);
+
+<Popover open={open} onOpenChange={setOpen}>
+  <PopoverTrigger asChild>
+    <button>⋮</button>
+  </PopoverTrigger>
+  <PopoverContent>{/* 내용 */}</PopoverContent>
+</Popover>;
+```
+
+## Align Variants
+
+`align` prop으로 트리거 기준 수평 정렬을 설정합니다.
+
+<Canvas of={PopoverStories.AlignVariants} />
+
+```tsx
+<Popover align="start">...</Popover>   {/* 트리거 왼쪽 기준 */}
+<Popover align="center">...</Popover>  {/* 트리거 중앙 기준 (default) */}
+<Popover align="end">...</Popover>     {/* 트리거 오른쪽 기준 */}
+```
+
+## Side Variants
+
+`side` prop으로 팝오버 방향을 설정합니다.
+
+<Canvas of={PopoverStories.SideVariants} />
+
+```tsx
+<Popover side="bottom">...</Popover>  {/* 트리거 아래 (default) */}
+<Popover side="top">...</Popover>     {/* 트리거 위 */}
+```
+
+## overflow:hidden 컨테이너
+
+모달 등 `overflow: hidden` 컨테이너 안에서 팝오버가 잘리는 경우 `containerRef`를 전달하세요.
+`containerRef`가 있으면 자동으로 `document.body`에 portal로 렌더링됩니다.
+
+<Canvas of={PopoverStories.InsideContainer} />
+
+```tsx
+const containerRef = useRef<HTMLDivElement>(null);
+
+<div ref={containerRef} style={{ overflow: "hidden" }}>
+  <Popover containerRef={containerRef}>
+    <PopoverTrigger asChild>
+      <button>열기</button>
+    </PopoverTrigger>
+    <PopoverContent>{/* body portal로 렌더링 — 잘림 없음 */}</PopoverContent>
+  </Popover>
+</div>;
+```
+
+## 화살표 없음
+
+`showArrow={false}`로 화살표를 숨깁니다. `PopoverMenu` 패턴에서 사용합니다.
+
+<Canvas of={PopoverStories.NoArrow} />
+
+```tsx
+<PopoverContent showArrow={false}>{/* 내용 */}</PopoverContent>
+```

@@ -1,0 +1,135 @@
+import { Meta, Canvas, Controls } from "@storybook/blocks";
+import * as PaddingStories from "./padding.stories";
+import { FeatureTable } from "../../../docs/FeatureTable";
+
+<Meta of={PaddingStories} />
+
+# Padding
+
+## Features
+
+<FeatureTable
+  basics={["콘텐츠 패딩 적용"]}
+  additionals={[
+    "전체 패딩 설정 (size)",
+    "x축 패딩 설정 (x)",
+    "y축 패딩 설정 (y)",
+    "개별 방향 설정 (top · bottom · left · right)",
+    "size + 방향별 override 조합 가능",
+    "HTML 태그 변경 (as)",
+  ]}
+/>
+
+<br />
+
+## Props
+
+```ts
+export type PaddingSize = "none" | "xs" | "sm" | "md" | "lg" | "xl";
+
+export interface PaddingProps {
+  children: ReactNode;
+  /** 전체 padding (default: "md") */
+  size?: PaddingSize;
+  /** 좌우 padding override */
+  x?: PaddingSize;
+  /** 상하 padding override */
+  y?: PaddingSize;
+  /** 위 padding override */
+  top?: PaddingSize;
+  /** 아래 padding override */
+  bottom?: PaddingSize;
+  /** 왼쪽 padding override */
+  left?: PaddingSize;
+  /** 오른쪽 padding override */
+  right?: PaddingSize;
+  /** HTML 태그 (default: "div") */
+  as?: ElementType;
+  className?: string;
+}
+```
+
+<Controls of={PaddingStories.Basic} />
+
+## Basic
+
+<Canvas of={PaddingStories.Basic} />
+
+```tsx
+<Padding size="md">
+  <div>Content</div>
+</Padding>
+```
+
+## Size Variants
+
+`size` prop으로 전체 패딩을 설정합니다.
+
+<Canvas of={PaddingStories.SizeVariants} />
+
+```tsx
+<Padding size="none">...</Padding>
+<Padding size="xs">...</Padding>
+<Padding size="sm">...</Padding>
+<Padding size="md">...</Padding>
+<Padding size="lg">...</Padding>
+<Padding size="xl">...</Padding>
+```
+
+## Axis (x / y)
+
+`x`, `y` prop으로 좌우 / 상하 패딩을 개별 설정합니다.
+
+<Canvas of={PaddingStories.AxisPadding} />
+
+```tsx
+<Padding x="lg">...</Padding>       {/* 좌우만 */}
+<Padding y="lg">...</Padding>       {/* 상하만 */}
+<Padding x="lg" y="sm">...</Padding> {/* 좌우 + 상하 */}
+```
+
+## Individual Sides
+
+`top`, `bottom`, `left`, `right` prop으로 각 방향을 개별 설정합니다.
+
+<Canvas of={PaddingStories.IndividualSides} />
+
+```tsx
+<Padding top="xl">...</Padding>
+<Padding bottom="xl">...</Padding>
+<Padding left="xl">...</Padding>
+<Padding right="xl">...</Padding>
+```
+
+## Override
+
+`size`로 전체 패딩을 설정한 후 방향별 prop으로 override할 수 있습니다. 방향별 prop이 `size`보다 우선 적용됩니다.
+
+<Canvas of={PaddingStories.Override} />
+
+```tsx
+{
+  /* 전체 md, top만 xl로 override */
+}
+<Padding size="md" top="xl">
+  ...
+</Padding>;
+
+{
+  /* 전체 lg, x축만 xs로 override */
+}
+<Padding size="lg" x="xs">
+  ...
+</Padding>;
+```
+
+## As Prop
+
+`as` prop으로 렌더링될 HTML 태그를 변경합니다.
+
+<Canvas of={PaddingStories.AsProp} />
+
+```tsx
+<Padding size="md" as="section">...</Padding>
+<Padding size="md" as="article">...</Padding>
+```

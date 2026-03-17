@@ -1,0 +1,150 @@
+import { Meta, Canvas, Controls } from "@storybook/blocks";
+import * as SectionStories from "./section.stories";
+import { FeatureTable } from "../../../docs/FeatureTable";
+
+<Meta of={SectionStories} />
+
+# Section
+
+## Features
+
+<FeatureTable
+  basics={["페이지 섹션 레이아웃", "Container 자동 래핑"]}
+  additionals={[
+    "패딩 설정 (none · xs · sm · md · lg · xl)",
+    "배경 설정 (transparent · white · gray · brand · dark · gradient)",
+    "전체 너비 (fullWidth)",
+    "Container 크기 설정 (containerSize)",
+    "Container 없이 사용 (noContainer)",
+  ]}
+/>
+
+<br />
+
+## Props
+
+```ts
+export type SectionPadding = "none" | "xs" | "sm" | "md" | "lg" | "xl";
+
+export type SectionBackground =
+  | "transparent"
+  | "white"
+  | "gray"
+  | "brand"
+  | "dark"
+  | "gradient";
+
+export interface SectionProps extends HTMLAttributes<HTMLElement> {
+  children: ReactNode;
+  padding?: SectionPadding; // default: "md"
+  background?: SectionBackground; // default: "transparent"
+  fullWidth?: boolean; // default: false
+  containerSize?: ContainerSize; // default: "xl"
+  noContainer?: boolean; // default: false
+}
+```
+
+<Controls of={SectionStories.Basic} />
+
+## Basic
+
+<Canvas of={SectionStories.Basic} />
+
+```tsx
+<Section padding="md" background="transparent">
+  <h2>Basic Section</h2>
+</Section>
+```
+
+## Padding Variants
+
+`padding` prop으로 상하 여백을 설정합니다.
+
+<Canvas of={SectionStories.PaddingVariants} />
+
+```tsx
+<Section padding="none">...</Section>
+<Section padding="xs">...</Section>
+<Section padding="sm">...</Section>
+<Section padding="md">...</Section>
+<Section padding="lg">...</Section>
+<Section padding="xl">...</Section>
+```
+
+## Background Variants
+
+`background` prop으로 배경색을 설정합니다. `brand`, `dark`, `gradient`는 텍스트 색상이 자동으로 흰색으로 전환됩니다.
+
+<Canvas of={SectionStories.BackgroundVariants} />
+
+```tsx
+<Section background="transparent">...</Section>
+<Section background="white">...</Section>
+<Section background="gray">...</Section>
+<Section background="brand">...</Section>
+<Section background="dark">...</Section>
+<Section background="gradient">...</Section>
+```
+
+## Full Width
+
+`fullWidth` prop으로 Container 너비 제한을 없앱니다.
+
+<Canvas of={SectionStories.FullWidth} />
+
+```tsx
+{
+  /* Container 있음 — 최대 너비 제한 */
+}
+<Section background="gray" padding="md">
+  ...
+</Section>;
+
+{
+  /* Full Width — 전체 너비 */
+}
+<Section background="dark" padding="md" fullWidth>
+  ...
+</Section>;
+```
+
+## No Container
+
+`noContainer` prop으로 Container 래핑 없이 콘텐츠를 직접 렌더링합니다.
+
+<Canvas of={SectionStories.NoContainer} />
+
+```tsx
+<Section background="brand" padding="lg" noContainer>
+  <div>Container 없이 전체 영역 사용</div>
+</Section>
+```
+
+## Landing Example
+
+실제 랜딩 페이지 레이아웃 예시입니다.
+
+<Canvas of={SectionStories.LandingExample} />
+
+```tsx
+{
+  /* Hero */
+}
+<Section background="gradient" padding="xl" fullWidth>
+  <h1>Hero Section</h1>
+</Section>;
+
+{
+  /* Feature */
+}
+<Section background="white" padding="lg">
+  <h2>Feature Section</h2>
+</Section>;
+
+{
+  /* CTA */
+}
+<Section background="brand" padding="lg" fullWidth>
+  <div>CTA 영역</div>
+</Section>;
+```

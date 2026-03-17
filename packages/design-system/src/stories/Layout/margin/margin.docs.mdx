@@ -1,0 +1,135 @@
+import { Meta, Canvas, Controls } from "@storybook/blocks";
+import * as MarginStories from "./margin.stories";
+import { FeatureTable } from "../../../docs/FeatureTable";
+
+<Meta of={MarginStories} />
+
+# Margin
+
+## Features
+
+<FeatureTable
+  basics={["콘텐츠 마진 적용"]}
+  additionals={[
+    "전체 마진 설정 (size)",
+    "x축 마진 설정 (x)",
+    "y축 마진 설정 (y)",
+    "개별 방향 설정 (top · bottom · left · right)",
+    "size + 방향별 override 조합 가능",
+    "HTML 태그 변경 (as)",
+  ]}
+/>
+
+<br />
+
+## Props
+
+```ts
+export type MarginSize = "none" | "xs" | "sm" | "md" | "lg" | "xl";
+
+export interface MarginProps {
+  children: ReactNode;
+  /** 전체 margin (default: "none") */
+  size?: MarginSize;
+  /** 좌우 margin override */
+  x?: MarginSize;
+  /** 상하 margin override */
+  y?: MarginSize;
+  /** 위 margin override */
+  top?: MarginSize;
+  /** 아래 margin override */
+  bottom?: MarginSize;
+  /** 왼쪽 margin override */
+  left?: MarginSize;
+  /** 오른쪽 margin override */
+  right?: MarginSize;
+  /** HTML 태그 (default: "div") */
+  as?: ElementType;
+  className?: string;
+}
+```
+
+<Controls of={MarginStories.Basic} />
+
+## Basic
+
+<Canvas of={MarginStories.Basic} />
+
+```tsx
+<Margin size="md">
+  <div>Content</div>
+</Margin>
+```
+
+## Size Variants
+
+`size` prop으로 전체 마진을 설정합니다.
+
+<Canvas of={MarginStories.SizeVariants} />
+
+```tsx
+<Margin size="none">...</Margin>
+<Margin size="xs">...</Margin>
+<Margin size="sm">...</Margin>
+<Margin size="md">...</Margin>
+<Margin size="lg">...</Margin>
+<Margin size="xl">...</Margin>
+```
+
+## Axis (x / y)
+
+`x`, `y` prop으로 좌우 / 상하 마진을 개별 설정합니다.
+
+<Canvas of={MarginStories.AxisMargin} />
+
+```tsx
+<Margin x="lg">...</Margin>        {/* 좌우만 */}
+<Margin y="lg">...</Margin>        {/* 상하만 */}
+<Margin x="lg" y="sm">...</Margin> {/* 좌우 + 상하 */}
+```
+
+## Individual Sides
+
+`top`, `bottom`, `left`, `right` prop으로 각 방향을 개별 설정합니다.
+
+<Canvas of={MarginStories.IndividualSides} />
+
+```tsx
+<Margin top="xl">...</Margin>
+<Margin bottom="xl">...</Margin>
+<Margin left="xl">...</Margin>
+<Margin right="xl">...</Margin>
+```
+
+## Override
+
+`size`로 전체 마진을 설정한 후 방향별 prop으로 override할 수 있습니다. 방향별 prop이 `size`보다 우선 적용됩니다.
+
+<Canvas of={MarginStories.Override} />
+
+```tsx
+{
+  /* 전체 md, top만 xl로 override */
+}
+<Margin size="md" top="xl">
+  ...
+</Margin>;
+
+{
+  /* 전체 lg, x축만 xs로 override */
+}
+<Margin size="lg" x="xs">
+  ...
+</Margin>;
+```
+
+## As Prop
+
+`as` prop으로 렌더링될 HTML 태그를 변경합니다.
+
+<Canvas of={MarginStories.AsProp} />
+
+```tsx
+<Margin size="md" as="section">...</Margin>
+<Margin size="md" as="article">...</Margin>
+```

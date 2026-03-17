@@ -7,8 +7,8 @@ import {
   PopoverHeader,
   PopoverTrigger,
 } from "../../components/popover";
-import { Button } from "../../components/button/button";
-import { FlexBox } from "../../components/layout/flexbox/flexbox";
+import { Button } from "../../components/button";
+import { FlexBox } from "../../components/layout/flexbox";
 
 // ─────────────────────────────────────────────
 // Meta

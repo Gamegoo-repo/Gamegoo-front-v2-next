@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Modal } from "../../components/modal";
-import { Button } from "../../components/button/button";
-import { FlexBox } from "../../components/layout/flexbox/flexbox";
+import { Button } from "../../components/button";
+import { FlexBox } from "../../components/layout/flexbox";
 
 // ─────────────────────────────────────────────
 // Meta

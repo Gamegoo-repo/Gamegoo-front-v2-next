@@ -5,4 +5,7 @@ export { spacing } from "./foundations/spacing";
 export { breakpoints } from "./foundations/breakpoints";
 export { theme } from "./foundations/theme";
 
+// component
+export { Button } from "./components/button";
+
 export { DesignSystemProvider } from "./global/DesignSystemProvider";

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Container } from "../../../components/layout/container/container";
+import { Container } from "../../../components/layout/container";
 import React from "react";
 
 const PageContent = () => (

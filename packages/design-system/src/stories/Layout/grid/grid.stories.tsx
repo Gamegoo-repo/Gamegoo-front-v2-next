@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Grid } from "../../../components/layout/grid/grid";
-import { GridItem } from "../../../components/layout/grid/item/grid-item";
+import { Grid, GridItem } from "../../../components/layout/grid";
+
 import React from "react";
 
 const Box = ({ height = 80 }: { height?: number }) => (

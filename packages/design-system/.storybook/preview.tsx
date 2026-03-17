@@ -1,6 +1,6 @@
 import React from "react";
 import type { Preview } from "@storybook/react";
-import { DesignSystemProvider } from "../src/global/DesignSystemProvider";
+import { DesignSystemProvider } from "../src";
 
 const preview: Preview = {
   parameters: {

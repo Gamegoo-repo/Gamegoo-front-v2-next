@@ -4,6 +4,9 @@
   "scripts": {
     "dev": "pnpm --filter gamegoo-front-v2-next dev",
     "build": "pnpm --filter gamegoo-front-v2-next build",
-    "start": "pnpm --filter gamegoo-front-v2-next start"
+    "start": "pnpm --filter gamegoo-front-v2-next start",
+    "build:ds": "pnpm --filter @gamegoo/design-system build",
+    "dev:ds": "pnpm --filter @gamegoo/design-system dev",
+    "dev:all": "pnpm --parallel --filter @gamegoo/design-system --filter gamegoo-front-v2-next dev"
   }
 }

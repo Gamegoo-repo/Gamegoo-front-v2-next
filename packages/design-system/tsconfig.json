@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+
+    "moduleResolution": "Bundler",
+
+    "jsx": "react-jsx",
+
+    "declaration": true,
+    "emitDeclarationOnly": false,
+
+    "strict": true,
+    "esModuleInterop": true,
+
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "baseUrl": "."
+  },
+  "include": ["src"]
+}
